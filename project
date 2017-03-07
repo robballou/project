@@ -1,0 +1,46 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+use Project\Command\LocalRunCommand;
+use Project\Command\DrushCommand;
+use Project\Command\ConnectCommand;
+use Project\Command\DrupalConsoleCommand;
+use Project\Command\Config\SourcesCommand;
+use Project\Command\Config\ListCommand;
+
+$application = new Application();
+
+$application->add(new LocalRunCommand());
+$application->add(new SourcesCommand());
+$application->add(new ListCommand());
+$application->add(new DrushCommand());
+$application->add(new DrupalConsoleCommand());
+$application->add(new ConnectCommand());
+
+$application->run();
+
+# #!/bin/bash
+#
+# DIR="empty"
+#
+# if [[ -n "$BASH_SOURCE" ]]; then
+# 	DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# fi
+#
+# if [[ -n "$PROJECT_HOME" ]]; then
+# 	DIR=$PROJECT_HOME
+# fi
+#
+# if [[ "$DIR" = "empty" ]]; then
+# 	2>&1 echo "Cannot find context. Please set PROJECT_HOME"
+# 	exit 1
+# else
+# 	php /Users/rballou/git/project/project.php "$@"
+# 	echo $response
+# 	# if [[ -n "$response" ]]; then
+# 	# 	eval $response
+# 	# fi
+# fi
