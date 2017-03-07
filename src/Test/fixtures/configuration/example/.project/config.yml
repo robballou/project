@@ -1,0 +1,4 @@
+local:
+  style: vagrant
+connect:
+  style: docker-compose

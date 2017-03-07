@@ -19,15 +19,16 @@ class ConnectCommand extends ProjectCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $config = $this->getConfig();
-    $command_config = $this->getCommandConfig('drush', $input);
+    $config = $this->getApplication()->config;
+    $command_config = $this->getApplication()->config->getCommandConfig('drush', $input);
+    $environment = $config->getEnvironment($input);
 
     $style = NULL;
-    if ($command_config && isset($command_config['style'])) {
-      $style = $command_config['style'];
+    if ($command_config && isset($command_config->style)) {
+      $style = $command_config->style;
     }
-    elseif ($config && isset($config['local'][$this->getEnvironment]['style'])) {
-      $style = $config['local'][$this->getEnvironment]['style'];
+    elseif ($config && isset($config->local->$environment->style)) {
+      $style = $config->local->$environment->style;
     }
 
     $this_command = '';

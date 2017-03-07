@@ -19,7 +19,7 @@ class SourcesCommand extends ProjectCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $config_files = $this->getConfigFiles();
+    $config_files = $this->getApplication()->config->getConfigFiles();
     foreach ($config_files as $config_file) {
       $output->writeln($config_file);
     }

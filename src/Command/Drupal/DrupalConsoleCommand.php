@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\Command;
+namespace Project\Command\Drupal;
 
 use Project\Command\ExecutableCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +21,7 @@ class DrupalConsoleCommand extends ExecutableCommand {
 
   protected function getExecutablePath() {
     $command = 'drupal';
-    $config = $this->getConfig();
+    $config = $this->getApplication()->config->getConfig();
     if (isset($config['drupal_console']['bin'])) {
       $command = $config['drupal_console']['bin'];
     }
@@ -29,7 +29,7 @@ class DrupalConsoleCommand extends ExecutableCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $config = $this->getCommandConfig('drupal_console');
+    $config = $this->getApplication()->config->getCommandConfig('drupal_console');
     if (!$config) {
       $error = $output->getErrorOutput();
       $error->writeln('<error>This project is not configured to use drupal console.</error>');
@@ -60,7 +60,7 @@ class DrupalConsoleCommand extends ExecutableCommand {
     switch ($config['style']) {
       case 'docker-compose':
         $pre = '';
-        $project_config = $this->getConfig();
+        $project_config = $this->getApplication()->config->getConfig();
         if ($project_config && isset($project_config['web_root'])) {
           $pre = 'cd ' . $project_config['web_root'] . ' && ';
         }

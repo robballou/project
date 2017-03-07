@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\Command;
+namespace Project\Command\Drupal;
 
 use Project\Command\ProjectCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,8 +21,8 @@ class DrushCommand extends ProjectCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $config = $this->getConfig();
-    $command_config = $this->getCommandConfig('drush', $input);
+    $config = $this->getApplication()->config->getConfig();
+    $command_config = $this->getApplication()->config->getCommandConfig('drush', $input);
     if (!$command_config) {
       $error = $output->getErrorOutput();
       $error->writeln('<error>This project is not configured to use drush.</error>');

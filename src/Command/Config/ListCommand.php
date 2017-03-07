@@ -19,7 +19,7 @@ class ListCommand extends ProjectCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $config = $this->getConfig();
+    $config = $this->getApplication()->config->getConfig();
     $output->write(yaml_emit($config));
   }
 }
