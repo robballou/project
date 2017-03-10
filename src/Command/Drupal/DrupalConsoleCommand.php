@@ -2,7 +2,7 @@
 
 namespace Project\Command\Drupal;
 
-use Project\Command\ExecutableCommand;
+use Project\Base\ExecutableCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;

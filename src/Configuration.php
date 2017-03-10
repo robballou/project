@@ -43,7 +43,6 @@ class Configuration extends ArrayObjectWrapper {
 
   public function getConfigFiles($current_directory = NULL) {
     // check if the user's home directory has a configuration file
-
     if ($this->files) {
       return $this->files;
     }
@@ -96,6 +95,42 @@ class Configuration extends ArrayObjectWrapper {
       return $this->$command;
     }
     return NULL;
+  }
+
+  public function getCommands(array $options = []) {
+    $directory = __DIR__;
+    if (isset($options['directory'])) {
+      $directory = $options['directory'];
+    }
+
+    if (!isset($options['current']) && file_exists($directory . '/Command')) {
+      return $this->getCommands(['current' => $directory . '/Command']);
+    }
+
+    $commands = [];
+    $d = dir($options['current']);
+    $source_path = array_reverse(explode('/', $options['current']));
+    while ($source_path[0] != 'Command') {
+      array_shift($source_path);
+    }
+    $source_path = implode('/', array_reverse($source_path));
+
+    while (FALSE !== ($entry = $d->read())) {
+      if (substr($entry, 0, 1) == '.') {
+        continue;
+      }
+      $entry_path = $options['current'] . '/' . $entry;
+      if (is_file($entry_path) && preg_match('/Command.php$/', $entry)) {
+        $class = str_replace('.php', '', basename($entry_path));
+        $path = str_replace([$source_path, '/'], ['', '\\'], dirname($entry_path));
+        $namespace = 'Project\Command' . $path . '\\' . $class;
+        $commands[] = $namespace;
+      }
+      elseif (is_dir($entry_path)) {
+        $commands = array_merge($commands, $this->getCommands(['current' => $entry_path]));
+      }
+    }
+    return $commands;
   }
 
   public function getConfig($directory = NULL) {

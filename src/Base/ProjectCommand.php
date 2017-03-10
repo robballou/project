@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\Command;
+namespace Project\Base;
 
 use Symfony\Component\Console\Command\Command;
 

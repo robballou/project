@@ -4,22 +4,26 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputOption;
 use Project\Configuration;
-use Project\Command\LocalRunCommand;
-use Project\Command\Drupal\DrushCommand;
-use Project\Command\ConnectCommand;
-use Project\Command\Drupal\DrupalConsoleCommand;
-use Project\Command\Config\SourcesCommand;
-use Project\Command\Config\ListCommand;
 
 $application = new Application();
 $application->config = new Configuration();
 
-$application->add(new LocalRunCommand());
-$application->add(new SourcesCommand());
-$application->add(new ListCommand());
-$application->add(new DrushCommand());
-$application->add(new DrupalConsoleCommand());
-$application->add(new ConnectCommand());
+$application->getDefinition()->addOption(
+  new InputOption(
+    'environment',
+    'e',
+    InputOption::VALUE_OPTIONAL,
+    'The environment to operate in.'
+  )
+);
+
+// find commands in src/Command
+$commands = $application->config->getCommands();
+
+foreach ($commands as $command) {
+  $application->add(new $command());
+}
 
 $application->run();
