@@ -13,16 +13,8 @@ class ArrayObjectWrapper implements \Iterator {
 
   public function __get($thing) {
     if (isset($this->array[$thing])) {
-      if (is_array($this->array[$thing])) {
-        $this_thing = $this->array[$thing];
-        $keys = array_filter(array_keys($this_thing), function ($key) {
-          if (!is_int($key)) {
-            return TRUE;
-          }
-        });
-        if ($keys) {
-          return new ArrayObjectWrapper($this_thing);
-        }
+      if ($this->isAssociativeArray($this->array[$thing])) {
+        return new ArrayObjectWrapper($this->array[$thing]);
       }
       return $this->array[$thing];
     }
@@ -42,11 +34,19 @@ class ArrayObjectWrapper implements \Iterator {
   }
 
   public function current() {
-    return current($this->array);
+    $item = current($this->array);
+    if ($this->isAssociativeArray($item)) {
+      $item = new ArrayObjectWrapper($item);
+    }
+    return $item;
   }
 
   public function rewind() {
-    return reset($this->array);
+    $item = reset($this->array);
+    if ($this->isAssociativeArray($item)) {
+      $item = new ArrayObjectWrapper($item);
+    }
+    return $item;
   }
 
   public function key() {
@@ -54,7 +54,11 @@ class ArrayObjectWrapper implements \Iterator {
   }
 
   public function next() {
-    return next($this->array);
+    $item = next($this->array);
+    if ($this->isAssociativeArray($item)) {
+      $item = new ArrayObjectWrapper($item);
+    }
+    return $item;
   }
 
   public function valid() {
@@ -90,6 +94,25 @@ class ArrayObjectWrapper implements \Iterator {
     }
 
     return NULL;
+  }
+
+  public function isAssociativeArray($thing) {
+    if (!is_array($thing)) {
+      return FALSE;
+    }
+
+    // check if this is a non-numeric array
+    $keys = array_filter(array_keys($thing), function ($key) {
+      if (!is_int($key)) {
+        return TRUE;
+      }
+    });
+
+    if ($keys) {
+      return TRUE;
+    }
+
+    return FALSE;
   }
 
 }

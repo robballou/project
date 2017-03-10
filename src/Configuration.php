@@ -130,6 +130,11 @@ class Configuration extends ArrayObjectWrapper {
         $commands = array_merge($commands, $this->getCommands(['current' => $entry_path]));
       }
     }
+
+    if ($custom_commands = $this->getConfigOption('commands')) {
+      $commands = array_merge($commands, $custom_commands);
+    }
+
     return $commands;
   }
 
