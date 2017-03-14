@@ -1,0 +1,14 @@
+connect:
+
+  # an SSH style connection: this will effectively be:
+  #   ssh example -t "cd /var/www/vhosts/example.com; bash --login"
+  stage:
+    style: ssh
+    host: example
+    base: /var/www/vhosts/example.com
+
+  # use Vagrant to SSH in...
+  #   cd ~/git/example.com && vagrant ssh
+  stage:
+    style: vagrant
+    base: ~/git/example.com
