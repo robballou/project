@@ -6,6 +6,7 @@ use Project\Base\ProjectCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Project\Executor\Executor;
 
 class ConnectCommand extends ProjectCommand {
   protected function configure() {
@@ -32,6 +33,28 @@ class ConnectCommand extends ProjectCommand {
 
     $this_command = '';
     switch ($style) {
+      case 'ssh':
+        $host = $config->getConfigOption([
+          'connect.' . $environment . '.host',
+          'connect.host',
+          'local.' . $environment . '.host',
+          'local.host',
+        ]);
+        if (!$host) {
+          throw new Exception('No host found for this environment');
+        }
+        $sub_command = 'bash --login';
+        $base = $config->getConfigOption(['connect.' . $environment . '.base',
+          'connect.base',
+          'local.' . $environment . '.base',
+          'local.base',
+        ]);
+        if ($base) {
+          $sub_command = 'cd ' . $base . '; ' . $sub_command;
+        }
+        $this_command = 'ssh ' . $host . ' -t "' . $sub_command . '"';
+        break;
+
       case 'vagrant':
         // we need the vagrant directory...
         $vagrant_directory = $config->getConfigOption([
@@ -45,13 +68,23 @@ class ConnectCommand extends ProjectCommand {
         break;
 
       case 'docker-compose':
-        $this_command = 'docker-compose exec drupal /bin/bash';
+        $container = $config->getConfigOption([
+          'local.' . $environment . '.container',
+          'local.container',
+        ]);
+        if (!$container) {
+          throw new Exception('No container is set for this environment');
+        }
+        $this_command = 'docker-compose exec ' . $container . ' /bin/bash';
         break;
     }
 
     // better processing...
-    $process = proc_open($this_command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
-    $proc_status = proc_get_status($process);
-    $exit_code = proc_close($process);
+    $ex = new Executor($this_command);
+    if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+      $ex->outputCommand($output);
+    }
+    $ex->execute();
   }
+
 }

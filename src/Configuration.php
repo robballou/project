@@ -158,7 +158,7 @@ class Configuration extends ArrayObjectWrapper {
     return $this->array;
   }
 
-  public function getConfigOption($option) {
+  public function getConfigOption($option, $default=NULL) {
     if (!is_array($option)) {
       $option = [$option];
     }
@@ -182,6 +182,6 @@ class Configuration extends ArrayObjectWrapper {
       }
     }
 
-    return NULL;
+    return $default;
   }
 }

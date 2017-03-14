@@ -69,7 +69,11 @@ class DrushCommand extends ProjectCommand {
         if (isset($config->web_root)) {
           $pre = 'cd ' . $config->web_root . ' && ';
         }
-        $this_command = 'docker-compose exec drupal /bin/bash -c "' . $pre . 'drush' . $options . $command . '"';
+        $container = $config->getConfigOption([
+          'drush.' . $environment . '.container',
+          'drush.container',
+        ], 'drupal');
+        $this_command = 'docker-compose exec ' . $container . ' /bin/bash -c "' . $pre . 'drush' . $options . $command . '"';
         break;
     }
 
