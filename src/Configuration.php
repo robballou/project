@@ -84,7 +84,11 @@ class Configuration extends ArrayObjectWrapper {
       if ($input && $environment = $input->getOption('environment')) {
         if (isset($this->$command->$environment)) {
           // maybe this should merge default?
-          return $this->$command->$environment;
+          $command_config = new ArrayObjectWrapper($this->$command->$environment);
+          if (isset($this->$command->options)) {
+            $command_config->merge('options', $this->$command->options);
+          }
+          return $command_config;
         }
         throw new \Exception('Invalid environment specified: ' . $environment);
       }

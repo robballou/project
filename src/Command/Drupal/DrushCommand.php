@@ -78,9 +78,10 @@ class DrushCommand extends ProjectCommand {
     }
 
     $ex = new Executor($this_command);
-    if ($input->getOption('output-command')) {
+    if ($input->getOption('output-command') || $output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
       $ex->outputCommand($output);
     }
     $ex->execute();
   }
+
 }

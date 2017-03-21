@@ -3,6 +3,7 @@
 namespace Project\Command\Drupal;
 
 use Project\Base\ExecutableCommand;
+use Project\Executor\Executor;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,14 +30,17 @@ class DrupalConsoleCommand extends ExecutableCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $config = $this->getApplication()->config->getCommandConfig('drupal_console');
-    if (!$config) {
+    $config = $this->getApplication()->config;
+    $environment = $config->getEnvironment($input);
+    $command_config = $config->getCommandConfig('drupal_console', $input);
+
+    if (!$command_config) {
       $error = $output->getErrorOutput();
       $error->writeln('<error>This project is not configured to use drupal console.</error>');
       return;
     }
 
-    if (!isset($config['style'])) {
+    if (!isset($command_config->style)) {
       $error = $output->getErrorOutput();
       $error->writeln('<error>No drupal_console "style" is set for this project.</error>');
       return;
@@ -48,8 +52,8 @@ class DrupalConsoleCommand extends ExecutableCommand {
     }
 
     $options = '';
-    if (isset($config['options'])) {
-      foreach ($config['options'] as $option => $value) {
+    if (isset($command_config->options)) {
+      foreach ($command_config->options as $option => $value) {
         $options .= '--' . $option . '=' . $value . ' ';
       }
     }
@@ -57,16 +61,31 @@ class DrupalConsoleCommand extends ExecutableCommand {
       $options = ' ' . $options;
     }
 
-    switch ($config['style']) {
+    $this_command = '';
+    switch ($command_config->style) {
       case 'docker-compose':
         $pre = '';
-        $project_config = $this->getApplication()->config->getConfig();
-        if ($project_config && isset($project_config['web_root'])) {
-          $pre = 'cd ' . $project_config['web_root'] . ' && ';
+        if ($web_root = $config->getConfigOption('web_root')) {
+          $pre = 'cd ' . escapeshellarg($web_root) . ' && ';
         }
-        passthru('docker-compose exec drupal /bin/bash -c "' . $pre . $this->getExecutablePath() . $options . $command . '"');
+        $container = $config->getConfigOption([
+          'drush.' . $environment . '.container',
+          'drush.container',
+        ], 'drupal');
+
+        $this_command = 'docker-compose exec ' . escapeshellarg($container) . ' /bin/bash -c "' . $pre . $this->getExecutablePath() . $options . $command . '"';
         break;
     }
 
+    if (!$this_command) {
+      throw new \Exception('Invalid drupal console "style": ' . $config->style);
+    }
+
+    $ex = new Executor($this_command);
+    if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+      $ex->outputCommand($output);
+    }
+    $ex->execute();
   }
+
 }

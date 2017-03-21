@@ -7,6 +7,9 @@ class ArrayObjectWrapper implements \Iterator {
 
   public function __construct($array = NULL) {
     if ($array !== NULL) {
+      if ($array instanceof ArrayObjectWrapper) {
+        $array = $array->getArray();
+      }
       $this->array = $array;
     }
   }
@@ -94,6 +97,27 @@ class ArrayObjectWrapper implements \Iterator {
     }
 
     return NULL;
+  }
+
+  public function merge($option, $value) {
+    if ($value instanceof ArrayObjectWrapper) {
+      $value = $value->getArray();
+    }
+
+    if (!isset($this->array[$option])) {
+      $this->$option = $value;
+      return;
+    }
+
+    $option_value = $this->array[$option];
+    if ($option_value instanceof ArrayObjectWrapper) {
+      $option_value = $option_value->getArray();
+    }
+
+
+    if (is_array($option_value)) {
+      $this->array[$option] = array_merge($option_value, $value);
+    }
   }
 
   public function isAssociativeArray($thing) {

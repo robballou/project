@@ -4,6 +4,9 @@ namespace Project\Test;
 
 use PHPUnit\Framework\TestCase;
 use Project\Configuration;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Input\InputOption;
 
 class ConfigurationTest extends TestCase {
   public function testGetFilesFromChildDirectory() {
@@ -26,4 +29,54 @@ class ConfigurationTest extends TestCase {
     $this->assertTrue($connect !== NULL);
     $this->assertEquals('docker-compose', $connect->style);
   }
+
+  /**
+   * Test that command config includes command options when set...
+   */
+  public function testGetCommandConfigWithDefaults() {
+    $config = new Configuration(__DIR__ . '/fixtures/configuration/example');
+    $connect = $config->getCommandConfig('command');
+    $this->assertTrue($connect !== NULL);
+    $this->assertTrue(isset($connect->options, $connect->options->thing));
+
+    $def = new InputDefinition();
+    $def->addOption(new InputOption(
+      'environment',
+      'e',
+      InputOption::VALUE_OPTIONAL,
+      'The environment to operate in.'
+    ));
+    $input = new ArrayInput(['-e' => 'environment'], $def);
+
+    $connect = $config->getCommandConfig('command', $input);
+    $this->assertTrue($connect !== NULL);
+    $this->assertTrue(isset($connect->options, $connect->options->thing));
+  }
+
+  /**
+   * Test Configuration::getConfigOption()
+   */
+  public function testGetConfigOption() {
+    $config = new Configuration(__DIR__ . '/fixtures/configuration/example');
+
+    $tests = [
+      [
+        'input' => 'local.style',
+        'expected' => 'vagrant',
+      ],
+      [
+        'input' => ['local.style'],
+        'expected' => 'vagrant',
+      ],
+      [
+        'input' => ['local.thing', 'local.style'],
+        'expected' => 'vagrant',
+      ],
+    ];
+
+    foreach ($tests as $test) {
+      $this->assertEquals($test['expected'], $config->getConfigOption($test['input']));
+    }
+  }
+
 }

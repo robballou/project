@@ -1,0 +1,19 @@
+drush:
+
+  # the default environment can be specified as it's own item or just within
+  # "drush" config if there is only a default.
+  #
+  # This example will connect to the php container via docker-compose:
+  #   docker-compose exec php "/bin/bash"
+  default:
+    style: docker-compose
+    container: php
+
+  # you can also specify drush environments, and use: project -estage drush to
+  # connect to those...
+  #
+  # This example connects via a drush alias:
+  #   drush @example.stage
+  stage:
+    style: drush-alias
+    alias: example.stage
