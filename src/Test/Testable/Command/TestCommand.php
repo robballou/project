@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\Test\Command;
+namespace Project\Test\Testable\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

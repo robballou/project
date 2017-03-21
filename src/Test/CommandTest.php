@@ -3,7 +3,7 @@
 namespace Project\Test;
 
 use PHPUnit\Framework\TestCase;
-use Project\Test\Command\TestCommand;
+use Project\Test\Testable\Command\TestCommand;
 
 /**
  * Test commands

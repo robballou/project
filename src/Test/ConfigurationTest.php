@@ -4,6 +4,7 @@ namespace Project\Test;
 
 use PHPUnit\Framework\TestCase;
 use Project\Configuration;
+use Project\Test\Testable\TestConfiguration;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
@@ -76,6 +77,40 @@ class ConfigurationTest extends TestCase {
 
     foreach ($tests as $test) {
       $this->assertEquals($test['expected'], $config->getConfigOption($test['input']));
+    }
+  }
+
+  /**
+   * Test PathTrait::getPathVariables()
+   */
+  public function testGetPathVariablesWithBase() {
+    $test_config = new TestConfiguration(__DIR__ . '/fixtures/configuration/example');
+    $variables = $test_config->testGetPathVariables();
+    $this->assertTrue(is_array($variables), "Variables should be an array");
+    $this->assertTrue(isset($variables['PROJECT'], $variables['HOME']));
+    $this->assertEquals('~/git/example', $variables['PROJECT']);
+  }
+
+  /**
+   * Test PathTrait::getPathVariables()
+   */
+  public function testGetPathVariablesWithoutBase() {
+    $test_config = new TestConfiguration(__DIR__ . '/fixtures/configuration');
+    $variables = $test_config->testGetPathVariables();
+    $this->assertTrue(is_array($variables), "Variables should be an array");
+    $this->assertFalse(isset($variables['PROJECT'], $variables['HOME']));
+  }
+
+  public function testReplacePathVariables() {
+    $test_config = new TestConfiguration(__DIR__ . '/fixtures/configuration/example');
+    $tests = [
+      [
+        'test' => '$PROJECT/project',
+        'expect' => '~/git/example/project',
+      ],
+    ];
+    foreach ($tests as $test) {
+      $this->assertEquals($test['expect'], $test_config->testReplacePathVariables($test['test'], $test_config));
     }
   }
 

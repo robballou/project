@@ -9,16 +9,16 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
-class LocalRunCommand extends ProjectCommand {
+class LocalStopCommand extends ProjectCommand {
   protected function configure() {
     $this
       // the name of the command (the part after "bin/console")
-      ->setName('local:run')
+      ->setName('local:stop')
 
       // the short description shown while running "php bin/console list"
-      ->setDescription('Run the local environment')
+      ->setDescription('Stop the local environment')
 
-      ->addArgument('thing', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Optional thing(s) to run')
+      ->addArgument('thing', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Optional thing(s) to stop')
     ;
   }
 
@@ -45,11 +45,8 @@ class LocalRunCommand extends ProjectCommand {
     $this->outputVerbose($output, 'Running: ' . implode(', ', $things->getKeys()));
     foreach ($things as $key => $thing) {
       $runner_class = $this->getRunner($thing);
-      if (!$runner_class) {
-        throw new \Exception('No runner for this thing: ' . json_encode($thing));
-      }
       $runner = new $runner_class($config, $thing, $output);
-      $runner->run();
+      $runner->stop();
       $this->outputVerbose($output, 'Started: ' . $key);
     }
   }
@@ -65,8 +62,6 @@ class LocalRunCommand extends ProjectCommand {
       'vagrant' => 'Project\Runner\VagrantRunner',
       'docker-compose' => 'Project\Runner\DockerComposeRunner',
       'docker' => 'Project\Runner\DockerRunner',
-      'script' => 'Project\Runner\ScriptRunner',
-      'command' => 'Project\Runner\CommandRunner',
     ];
     if (in_array($style, array_keys($map))) {
       return $map[$style];

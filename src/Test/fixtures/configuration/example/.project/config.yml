@@ -1,3 +1,4 @@
+base: ~/git/example
 local:
   style: vagrant
 connect:

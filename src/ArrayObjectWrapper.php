@@ -72,6 +72,10 @@ class ArrayObjectWrapper implements \Iterator {
     return $this->array;
   }
 
+  public function getKeys() {
+    return array_keys($this->array);
+  }
+
   public function get($option) {
     if (!is_array($option)) {
       $option = [$option];
