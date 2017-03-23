@@ -5,4 +5,4 @@ php:
   - '7.1'
 install:
   - composer install --no-dev
-script: phpunit -c phpunit.xml
+  - composer update --no-dev
