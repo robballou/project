@@ -1,6 +1,7 @@
 {
     "require": {
-      "symfony/console": "^3.2"
+      "symfony/console": "^3.2",
+        "pantheon-systems/terminus": "^1.1"
     },
     "autoload": {
       "psr-4": {"Project\\": "src/"}
