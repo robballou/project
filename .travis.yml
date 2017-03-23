@@ -3,6 +3,6 @@ php:
   - '7.0'
   - '7.1'
 install:
-  - pecl install yaml
+  - printf "\n" | pecl install yaml
   - composer install --no-dev
   - composer update --no-dev
