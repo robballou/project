@@ -41,8 +41,19 @@ class ConnectCommand extends ProjectCommand {
           'local.host',
         ]);
         if (!$host) {
-          throw new Exception('No host found for this environment');
+          throw new \Exception('No host found for this environment');
         }
+
+        $user = $config->getConfigOption([
+          'connect.' . $environment . '.user',
+          'connect.user',
+          'local.' . $environment . '.user',
+          'local.user',
+        ]);
+        if ($user) {
+          $host = $user . '@' . $host;
+        }
+
         $sub_command = 'bash --login';
         $base = $config->getConfigOption(['connect.' . $environment . '.base',
           'connect.base',
@@ -69,21 +80,20 @@ class ConnectCommand extends ProjectCommand {
 
       case 'docker-compose':
         $container = $config->getConfigOption([
+          'connect.' . $environment . '.container',
+          'connect.container',
           'local.' . $environment . '.container',
           'local.container',
         ]);
         if (!$container) {
-          throw new Exception('No container is set for this environment');
+          throw new \Exception('No container is set for this environment');
         }
         $this_command = 'docker-compose exec ' . $container . ' /bin/bash';
         break;
     }
 
     // better processing...
-    $ex = new Executor($this_command);
-    if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-      $ex->outputCommand($output);
-    }
+    $ex = $this->getExecutor($this_command);
     $ex->execute();
   }
 

@@ -7,6 +7,14 @@ connect:
     host: example
     base: /var/www/vhosts/example.com
 
+  # an SSH style connection: this will effectively be:
+  #   ssh me@example.com -t "cd /var/www/vhosts/example.com; bash --login"
+  stage2:
+    style: ssh
+    host: example.com
+    user: me
+    base: /var/www/vhosts/example.com
+
   # use Vagrant to SSH in...
   #   cd ~/git/example.com && vagrant ssh
   stage:

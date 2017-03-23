@@ -2,13 +2,10 @@
 
 namespace Project\Base;
 
+use Project\Executor\Executor;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-// use Project\Trait\PathTrait;
-
-// use Symfony\Component\Console\Input\InputInterface;
-// use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Base command support
@@ -16,6 +13,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class ProjectCommand extends Command {
 
   use \Project\Traits\PathTrait;
+
+  protected function getExecutor($command, OutputInterface $output = NULL) {
+    if (!$output && $this->output) {
+      $output = $this->output;
+    }
+    $ex = new Executor($command, $output);
+    if ($output && $output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+      $ex->outputCommand($output);
+    }
+    return $ex;
+  }
 
   /**
    * Check if the array is associative...
@@ -44,6 +52,12 @@ abstract class ProjectCommand extends Command {
     if ($this->isVerbose($output)) {
       $output->writeln($message);
     }
+  }
+
+  public function run(InputInterface $input, OutputInterface $output) {
+    $this->input = $input;
+    $this->output = $output;
+    return parent::run($input, $output);
   }
 
 }

@@ -3,6 +3,7 @@ local:
   style: vagrant
 connect:
   style: docker-compose
+  container: drupal
 command:
   options:
     thing: 123

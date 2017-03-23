@@ -13,8 +13,9 @@ class Executor {
   protected $pre = [];
   protected $post = [];
 
-  public function __construct($command) {
+  public function __construct($command, OutputInterface $output = NULL) {
     $this->command = $command;
+    $this->output = $output;
   }
 
   public function execute($command = NULL) {
@@ -43,7 +44,9 @@ class Executor {
   }
 
   public function outputCommand(OutputInterface $output = NULL) {
-    $this->output = $output;
+    if ($output) {
+      $this->output = $output;
+    }
     $this->pre[] = [$this, 'output'];
     return $this;
   }
