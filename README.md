@@ -2,6 +2,8 @@
 
 A common interface for handling differences in projects.
 
+[![Build Status](https://travis-ci.org/robballou/project.svg?branch=master)](https://travis-ci.org/robballou/project)
+
 Many projects will have different setups for:
 
 * Local development style
