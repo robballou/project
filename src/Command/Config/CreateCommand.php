@@ -7,6 +7,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
+/**
+ * Creates a new configuration file if one is not present.
+ */
 class CreateCommand extends ProjectCommand {
   protected function configure() {
     $this
@@ -28,7 +31,7 @@ class CreateCommand extends ProjectCommand {
 
     $file = $dir . '/config.yml';
     if (!is_file($file)) {
-      file_put_contents($file, '');
+      file_put_contents($file, 'base: ' . $current . "\n");
     }
 
     $this->outputVerbose($output, 'Created ' . $file);

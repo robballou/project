@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\Command;
+namespace Project\Command\Local;
 
 use Project\Base\ProjectCommand;
 use Project\ArrayObjectWrapper;
@@ -9,11 +9,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
-class LocalRunCommand extends ProjectCommand {
+class RunCommand extends ProjectCommand {
   protected function configure() {
     $this
       // the name of the command (the part after "bin/console")
       ->setName('local:run')
+      ->setAliases(['local:start', 'local:up'])
 
       // the short description shown while running "php bin/console list"
       ->setDescription('Run the local environment')

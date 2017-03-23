@@ -8,3 +8,7 @@ command:
     thing: 123
   environment:
     style: shh
+
+url:
+  stage: http://staging.example.com
+  prod: http://example.com

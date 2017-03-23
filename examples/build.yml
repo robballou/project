@@ -1,0 +1,5 @@
+build:
+  dev:
+    style: command
+    command: gulp dev
+    base: ~/git/example

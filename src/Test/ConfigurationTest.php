@@ -80,6 +80,27 @@ class ConfigurationTest extends TestCase {
     }
   }
 
+  public function testGetConfigOptionWithDefaults() {
+    $config = new Configuration(__DIR__ . '/fixtures/configuration/example');
+
+    $tests = [
+      [
+        'input' => 'local.dne',
+        'default' => 123,
+        'expected' => 123,
+      ],
+      [
+        'input' => ['local.dne', 'local.dne2'],
+        'default' => 123,
+        'expected' => 123,
+      ],
+    ];
+
+    foreach ($tests as $test) {
+      $this->assertEquals($test['expected'], $config->getConfigOption($test['input'], $test['default']));
+    }
+  }
+
   /**
    * Test PathTrait::getPathVariables()
    */
@@ -98,7 +119,8 @@ class ConfigurationTest extends TestCase {
     $test_config = new TestConfiguration(__DIR__ . '/fixtures/configuration');
     $variables = $test_config->testGetPathVariables();
     $this->assertTrue(is_array($variables), "Variables should be an array");
-    $this->assertFalse(isset($variables['PROJECT'], $variables['HOME']));
+    $this->assertTrue(isset($variables['PROJECT']));
+    $this->assertEquals(__DIR__ . '/fixtures/configuration', $variables['PROJECT']);
   }
 
   public function testReplacePathVariables() {
@@ -106,7 +128,7 @@ class ConfigurationTest extends TestCase {
     $tests = [
       [
         'test' => '$PROJECT/project',
-        'expect' => '~/git/example/project',
+        'expect' => $test_config->getUserHome() . '/git/example/project',
       ],
     ];
     foreach ($tests as $test) {

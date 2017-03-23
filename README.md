@@ -25,14 +25,16 @@ You can have a global configuration file at `~/.project/config.yml` and project 
 
 ### build
 
-Build tool support...
+Run build tools. This relies heavily on how it's defined in your configuration. For example:
 
-Planned support:
+```yaml
+build:
+  dev:
+    style: command
+    command: gulp dev
+```
 
-- Gulp
-- Grunt
-- Webpack
-- Other?
+Then you can run: `project build dev`
 
 ### connect
 
@@ -40,7 +42,7 @@ Connect to the environment via a shell (e.g., via SSH or docker).
 
 ### local
 
-Commands dealing with local development... currently thinking:
+Commands dealing with local development:
 
     # start any local dev environments
     project local:run
