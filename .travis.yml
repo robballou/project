@@ -4,12 +4,9 @@ php:
   - '7.1'
 
 # before_install:
-  - pecl channel-update pecl.php.net
+#   - pecl channel-update pecl.php.net
 #   - (CFLAGS="-O1 -g3 -fno-strict-aliasing"; pecl install yaml < /dev/null &)
 
 before_script:
-  - pecl channel-update pecl.php.net
-  - printf "\n" | pecl install yaml
-  - echo "extension=yaml.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer install --no-dev
   - composer update --no-dev

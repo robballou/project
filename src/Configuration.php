@@ -4,6 +4,7 @@ namespace Project;
 
 use Project\ArrayObjectWrapper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class Configuration extends ArrayObjectWrapper {
   use \Project\Traits\PathTrait;
@@ -132,7 +133,7 @@ class Configuration extends ArrayObjectWrapper {
     $config = [];
 
     foreach ($this->getConfigFiles($directory) as $config_file) {
-      $this_config = @\yaml_parse_file($config_file);
+      $this_config = Yaml::parse(file_get_contents($config_file));
       if (!$this_config) {
         fwrite(STDERR, 'WARNING: Could not load configuration file: ' . $config_file . "\n");
         continue;
