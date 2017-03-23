@@ -85,5 +85,7 @@ Save common URLs for a project:
 
 URLs are saved in the config files:
 
-    url:
-      stage: http://example.com
+```yaml
+url:
+  stage: http://example.com
+```
