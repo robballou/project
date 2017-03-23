@@ -132,7 +132,7 @@ class Configuration extends ArrayObjectWrapper {
     $config = [];
 
     foreach ($this->getConfigFiles($directory) as $config_file) {
-      $this_config = @yaml_parse_file($config_file);
+      $this_config = @\yaml_parse_file($config_file);
       if (!$this_config) {
         fwrite(STDERR, 'WARNING: Could not load configuration file: ' . $config_file . "\n");
         continue;
