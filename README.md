@@ -11,6 +11,11 @@ Many projects will have different setups for:
 
 This aims to provide a set of common terms with the configurability needed to address various needs.
 
+## Requirements
+
+1. PHP 7 (probably runs in later PHP 5 too)
+1. [Composer](https://getcomposer.org/)
+
 ## Install
 
 1. Git clone this to your preferred location.
