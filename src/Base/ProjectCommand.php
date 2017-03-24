@@ -18,6 +18,7 @@ abstract class ProjectCommand extends Command {
     if (!$output && $this->output) {
       $output = $this->output;
     }
+
     $ex = new Executor($command, $output);
     if ($output && $output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
       $ex->outputCommand($output);
@@ -54,6 +55,9 @@ abstract class ProjectCommand extends Command {
     }
   }
 
+  /**
+   * Overrides the parent to store the output/inputs
+   */
   public function run(InputInterface $input, OutputInterface $output) {
     $this->input = $input;
     $this->output = $output;

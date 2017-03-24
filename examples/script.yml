@@ -1,0 +1,6 @@
+script:
+  example:
+    script: my_script.sh
+    base: path/to/working/dir
+  another:
+    script: $PROJECT/scripts/my_script.sh

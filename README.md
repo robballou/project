@@ -70,6 +70,13 @@ Planned support:
 - drocker
 - ???
 
+### script
+
+Run a defined script.
+
+    project script some_script
+    project script some_script much args
+
 ### test
 
 Run tests with the project's preferred test suites.
