@@ -52,12 +52,24 @@ class TestCommand extends ProjectCommand {
     $commands = [];
 
     switch ($style) {
+      case 'local':
+        foreach ($tests as $test => $details) {
+          $test_command = '';
+          if (isset($details->base) && $path = $this->validatePath($details->base)) {
+            $test_command = 'cd ' . $path . ' && ';
+          }
+          $test_command .= $details->command;
+          $this_command = $test_command;
+          $commands[$test] = $this_command;
+        }
+        break;
+
       // Run tests on docker
       case 'docker-compose':
         foreach ($tests as $test => $details) {
           $test_command = '';
-          if (isset($details->base)) {
-            $test_command = 'cd ' . $details->base . ' && ';
+          if (isset($details->base) && $path = $this->validatePath($details->base)) {
+            $test_command = 'cd ' . $path . ' && ';
           }
           $test_command .= $details->command;
           $this_command = 'docker-compose exec drupal /bin/bash -c "' . $test_command . '"';
@@ -76,8 +88,8 @@ class TestCommand extends ProjectCommand {
 
         foreach ($tests as $test => $details) {
           $test_command = '';
-          if (isset($details->base)) {
-            $test_command = 'cd ' . $details->base . ' && ';
+          if (isset($details->base) && $path = $this->validatePath($details->base)) {
+            $test_command = 'cd ' . $path . ' && ';
           }
           $test_command .= $details->command;
           $this_command = 'cd ' . $vagrant_directory . ' && vagrant ssh "' . $test_command . '"';

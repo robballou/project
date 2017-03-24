@@ -1,0 +1,6 @@
+test:
+  default:
+    style: local
+  phpunit:
+    base: $PROJECT
+    command: phpunit

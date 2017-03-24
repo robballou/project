@@ -26,7 +26,7 @@ This aims to provide a set of common terms with the configurability needed to ad
 
 ## Configuration
 
-You can have a global configuration file at `~/.project/config.yml` and project specific configuration in `PATH/TO/PROJECT/.project/config.yml`.
+You can have a global configuration file at `~/.project/config.yml` and project specific configuration in `PATH/TO/PROJECT/.project/config.yml`. If you have multiple configurations in your path, the "closest" configurations take precedence. You can view your config sources by running `project config:sources`.
 
 ## Terms/Commands
 
@@ -81,11 +81,12 @@ Run a defined script.
 
 Run tests with the project's preferred test suites.
 
-Planned support:
+    # run all the tests
+    project test
 
-- phpunit
-- behat
-- JS testing frameworks, etc.
+    # run specific tests
+    project test behat
+
 
 ### url
 
