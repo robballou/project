@@ -31,7 +31,7 @@ class CreateCommand extends ProjectCommand {
 
     $file = $dir . '/config.yml';
     if (!is_file($file)) {
-      file_put_contents($file, 'base: ' . $current . "\n");
+      file_put_contents($file, "\n");
     }
 
     $this->outputVerbose($output, 'Created ' . $file);
