@@ -46,7 +46,7 @@ class StopCommand extends ProjectCommand {
     $this->outputVerbose($output, 'Running: ' . implode(', ', $things->getKeys()));
     foreach ($things as $key => $thing) {
       $runner_class = $this->getRunner($thing);
-      $runner = new $runner_class($config, $thing, $output);
+      $runner = new $runner_class($config, $thing, $input, $output);
       $runner->stop();
       $this->outputVerbose($output, 'Started: ' . $key);
     }

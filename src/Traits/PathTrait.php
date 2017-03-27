@@ -23,14 +23,7 @@ trait PathTrait {
 
     if ($config) {
       $variables['HOME'] = $config->getUserHome();
-
-      $base = $config->getConfigOption('base');
-      if (!$base) {
-        $files = $config->getConfigFiles();
-        $last_file = array_pop($files);
-        $base = dirname(dirname($last_file));
-      }
-      $variables['PROJECT'] = $base;
+      $variables['PROJECT'] = $config->getProjectPath();
     }
 
     return $variables;

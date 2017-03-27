@@ -171,4 +171,14 @@ class Configuration extends ArrayObjectWrapper {
 
     return $default;
   }
+
+  public function getProjectPath() {
+    $base = $this->getConfigOption('base');
+    if (!$base) {
+      $files = $this->getConfigFiles();
+      $last_file = array_pop($files);
+      $base = dirname(dirname($last_file));
+    }
+    return $base;
+  }
 }

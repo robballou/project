@@ -49,7 +49,7 @@ class RunCommand extends ProjectCommand {
       if (!$runner_class) {
         throw new \Exception('No runner for this thing: ' . json_encode($thing));
       }
-      $runner = new $runner_class($config, $thing, $output);
+      $runner = new $runner_class($config, $thing, $input, $output);
       $runner->run();
       $this->outputVerbose($output, 'Started: ' . $key);
     }
