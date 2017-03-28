@@ -63,15 +63,32 @@ class BuildCommand extends ProjectCommand {
       $things = new ArrayObjectWrapper($new_things);
     }
 
+    if (!$things) {
+      throw new \Exception('No things to build');
+    }
+
     $this->outputVerbose($output, 'Running: ' . implode(', ', $things->getKeys()));
     foreach ($things as $key => $thing) {
       $style = $thing->style;
+      if (!$style && isset($thing->script)) {
+        $style = 'script';
+      }
+      elseif (!$style && isset($thing->command)) {
+        $style = 'command';
+      }
+
       $command = [];
-      if ($style == 'script') {
+      if ($style == 'script' || $style == 'command') {
         if (isset($thing->base)) {
           $command[] = 'cd ' . $this->validatePath($thing->base);
         }
-        $command[] = $this->replacePathVariables($thing->script, $config);
+
+        if ($style == 'script') {
+          $command[] = $this->replacePathVariables($thing->script, $config);
+        }
+        else {
+          $command[] = $this->replacePathVariables($thing->command, $config);
+        }
       }
 
       if ($command) {

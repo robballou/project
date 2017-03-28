@@ -3,30 +3,19 @@ namespace Project\Runner;
 
 use Project\Runner\Runner;
 
-class ScriptRunner extends Runner {
+class CommandRunner extends Runner {
   public function run() {
-    if (!isset($this->thing->script)) {
-      throw new \Exception('No "script" set for this component');
-    }
     $base = $this->config->getConfigOption('base');
     if (isset($this->thing->base)) {
       $base = $this->thing->base;
     }
 
     $command = [];
-    $path = ($base) ? $this->validatePath($base) : FALSE;
-    if ($path) {
-      $command[] = 'cd ' . $path;
-    }
-    if ($base && !$path) {
-      throw new \Exception('Could not validate path: ' . $base);
+    if ($base) {
+      $command[] = 'cd ' . $this->validatePath($base);
     }
 
-    $script = $this->validatePath($this->thing->script, $this->config);
-    if (!$script) {
-      $script = $this->thing->script;
-    }
-    $command[] = $script;
+    $command[] = $this->thing->command;
     $ex = $this->getExecutor(implode(' && ', $command));
     $ex->execute();
   }

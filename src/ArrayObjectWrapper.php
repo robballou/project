@@ -2,7 +2,7 @@
 
 namespace Project;
 
-class ArrayObjectWrapper implements \Iterator {
+class ArrayObjectWrapper implements \Iterator, \JsonSerializable {
   protected $array = [];
 
   public function __construct($array = NULL) {
@@ -141,6 +141,10 @@ class ArrayObjectWrapper implements \Iterator {
     }
 
     return FALSE;
+  }
+
+  public function jsonSerialize() {
+    return $this->getArray();
   }
 
 }

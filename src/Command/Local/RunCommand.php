@@ -42,9 +42,24 @@ class RunCommand extends ProjectCommand {
       $output->writeln('No things to run');
       return;
     }
+    elseif (is_array($things)) {
+      $things = new ArrayObjectWrapper($things);
+    }
+
+    $processed_things = [];
+    foreach ($things as $key => $thing) {
+      if (is_string($thing)) {
+        $processed_things[$thing] = $config->getConfigOption('local.components.' . $thing);
+        continue;
+      }
+      $processed_things[$key] = $thing;
+    }
+    $things = new ArrayObjectWrapper($processed_things);
 
     $this->outputVerbose($output, 'Running: ' . implode(', ', $things->getKeys()));
     foreach ($things as $key => $thing) {
+      $this->outputVerbose($output, 'Running: ' . json_encode($thing, JSON_PRETTY_PRINT));
+
       $runner_class = $this->getRunner($thing);
       if (!$runner_class) {
         throw new \Exception('No runner for this thing: ' . json_encode($thing));
@@ -57,6 +72,9 @@ class RunCommand extends ProjectCommand {
 
   protected function getRunner($thing) {
     $style = $thing->style;
+    if (!$style) {
+      throw new \Exception('Invalid style for this local component: ' . json_encode($thing));
+    }
 
     if (isset($thing->runner)) {
       return $thing->runner;
