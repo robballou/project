@@ -1,0 +1,6 @@
+local:
+  components:
+    default:
+      style: vagrant
+    other:
+      style: docker-compose

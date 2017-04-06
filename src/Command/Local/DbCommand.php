@@ -9,15 +9,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
-class RunCommand extends LocalBaseCommand {
+class DbCommand extends LocalBaseCommand {
   protected function configure() {
     $this
       // the name of the command (the part after "bin/console")
-      ->setName('local:run')
-      ->setAliases(['local:start', 'local:up'])
+      ->setName('local:db')
 
       // the short description shown while running "php bin/console list"
-      ->setDescription('Run the local environment')
+      ->setDescription('Connect to the local DB')
 
       ->addArgument('thing', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Optional thing(s) to run')
     ;
@@ -32,13 +31,13 @@ class RunCommand extends LocalBaseCommand {
     foreach ($things as $key => $thing) {
       $this->outputVerbose($output, 'Running: ' . json_encode($thing, JSON_PRETTY_PRINT));
 
-      $runner_class = $this->getRunner($thing);
-      if (!$runner_class) {
-        throw new \Exception('No runner for this thing: ' . json_encode($thing));
-      }
-      $runner = new $runner_class($config, $thing, $input, $output);
-      $runner->run();
-      $this->outputVerbose($output, 'Started: ' . $key);
+      // $runner_class = $this->getRunner($thing);
+      // if (!$runner_class) {
+      //   throw new \Exception('No runner for this thing: ' . json_encode($thing));
+      // }
+      // $runner = new $runner_class($config, $thing, $input, $output);
+      // $runner->run();
+      // $this->outputVerbose($output, 'Started: ' . $key);
     }
   }
 

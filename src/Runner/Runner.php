@@ -12,6 +12,8 @@ abstract class Runner {
 
   protected $config;
   protected $thing;
+  protected $input;
+  protected $output;
 
   public function __construct(Configuration $config, $thing, InputInterface $input = NULL, OutputInterface $output = NULL) {
     $this->config = $config;

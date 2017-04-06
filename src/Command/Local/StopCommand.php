@@ -52,23 +52,4 @@ class StopCommand extends ProjectCommand {
     }
   }
 
-  protected function getRunner($thing) {
-    $style = $thing->style;
-
-    if (isset($thing->runner)) {
-      return $thing->runner;
-    }
-
-    $map = [
-      'vagrant' => 'Project\Runner\VagrantRunner',
-      'docker-compose' => 'Project\Runner\DockerComposeRunner',
-      'docker' => 'Project\Runner\DockerRunner',
-    ];
-    if (in_array($style, array_keys($map))) {
-      return $map[$style];
-    }
-
-    return NULL;
-  }
-
 }
