@@ -2,14 +2,14 @@
 
 namespace Project\Command\Local;
 
-use Project\Base\ProjectCommand;
+use Project\Base\LocalBaseCommand;
 use Project\ArrayObjectWrapper;
 use Project\Executor\Executor;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
-class StopCommand extends ProjectCommand {
+class StopCommand extends LocalBaseCommand {
   protected function configure() {
     $this
       // the name of the command (the part after "bin/console")
@@ -25,23 +25,8 @@ class StopCommand extends ProjectCommand {
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     $config = $this->getApplication()->config;
-    $things = $input->getArgument('thing');
 
-    // if the user did not specify things, try to find some
-    if (!$things) {
-      $things = $config->getConfigOption('local.components');
-      if (!$things) {
-        $things = $config->getConfigOption('local.default');
-        if ($things) {
-          $things = new ArrayObjectWrapper(['default' => $things]);
-        }
-      }
-    }
-
-    if (!$things) {
-      $output->writeln('No things to run');
-      return;
-    }
+    $things = $this->resolveThings($input, $output);
 
     $this->outputVerbose($output, 'Running: ' . implode(', ', $things->getKeys()));
     foreach ($things as $key => $thing) {
