@@ -56,6 +56,15 @@ Commands dealing with local development:
     project local:start
     project local:up
 
+    # run the default environment
+    project local:run default
+
+    # run the "frontend" environment
+    project local:run frontend
+
+    # run two things
+    project local:run default api
+
     # stop any local dev environments
     project local:stop
     project local:down

@@ -1,0 +1,19 @@
+local:
+  # local.default is applied to all components (if local.components
+  # is defined). If local.components does not exist, this is the
+  # environment that would be run right "local:run" or
+  # "local:run default"
+  default:
+    style: vagrant
+
+  components:
+
+    # this will inherit local.default.style
+    default:
+      base: $PROJECT/vagrant
+
+    # this will override local.default.style for a "script". Scripts
+    # should be executeable.
+    frontend:
+      style: script
+      script: $PROJECT/server.js
