@@ -32,6 +32,8 @@ You can have a global configuration file at `~/.project/config.yml` and project 
 
 ### build
 
+* [Example config](https://github.com/robballou/src/master/examples/build.yml)
+
 Run build tools. This relies heavily on how it's defined in your configuration. For example:
 
 ```yaml
@@ -45,9 +47,13 @@ Then you can run: `project build dev`
 
 ### connect
 
+* [Example config](https://github.com/robballou/src/master/examples/connect.yml)
+
 Connect to the environment via a shell (e.g., via SSH or docker).
 
 ### local
+
+* [Example config](https://github.com/robballou/src/master/examples/local.yml)
 
 Commands dealing with local development:
 
@@ -81,12 +87,16 @@ Planned support:
 
 ### script
 
+* [Example config](https://github.com/robballou/src/master/examples/script.yml)
+
 Run a defined script.
 
     project script some_script
     project script some_script much args
 
 ### test
+
+* [Example config](https://github.com/robballou/src/master/examples/test.yml)
 
 Run tests with the project's preferred test suites.
 
@@ -98,6 +108,8 @@ Run tests with the project's preferred test suites.
 
 
 ### url
+
+* [Example config](https://github.com/robballou/src/master/examples/url.yml)
 
 Save common URLs for a project:
 
