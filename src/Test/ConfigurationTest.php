@@ -13,10 +13,19 @@ class ConfigurationTest extends TestCase {
   public function testGetFilesFromChildDirectory() {
     $config = new Configuration(__DIR__ . '/fixtures/configuration/example');
     $files = $config->getConfigFiles();
-    $this->assertTrue(is_array($files));
-    $this->assertCount(2, $files);
-    $this->assertTrue(boolval(preg_match('/configuration\/\.project\/config\.yml$/', $files[0])), "The parent config files should be loaded first");
-    $this->assertTrue(boolval(preg_match('/configuration\/example\/\.project\/config\.yml$/', $files[1])), "The child config files should be loaded last");
+
+    // strip out the project's own .project config file 😁
+    $config_files = [];
+    array_map(function ($file) use (&$config_files) {
+      if (strpos($file, 'fixtures') !== FALSE) {
+        $config_files[] = $file;
+      }
+    }, $files);
+
+    $this->assertTrue(is_array($config_files));
+    $this->assertCount(2, $config_files);
+    $this->assertTrue(boolval(preg_match('/configuration\/\.project\/config\.yml$/', $config_files[0])), "The parent config files should be loaded first");
+    $this->assertTrue(boolval(preg_match('/configuration\/example\/\.project\/config\.yml$/', $config_files[1])), "The child config files should be loaded last");
   }
 
   public function testGetConfigFromChildDirectory() {
@@ -73,10 +82,20 @@ class ConfigurationTest extends TestCase {
         'input' => ['local.thing', 'local.style'],
         'expected' => 'vagrant',
       ],
+      [
+        'input' => ['local.thing', 'local.style'],
+        'expected' => 'vagrant',
+      ],
+      [
+        'input' => ['nothing'],
+        'expected' => 123,
+        'default' => 123,
+      ],
     ];
 
     foreach ($tests as $test) {
-      $this->assertEquals($test['expected'], $config->getConfigOption($test['input']));
+      $default = isset($test['default']) ? $test['default'] : NULL;
+      $this->assertEquals($test['expected'], $config->getConfigOption($test['input'], $default));
     }
   }
 

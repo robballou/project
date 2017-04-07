@@ -161,11 +161,9 @@ class Configuration extends ArrayObjectWrapper {
           }
           throw new \Exception('Cannot find piece');
         }
-
         return $current;
       }
       catch (\Exception $e) {
-
       }
     }
 

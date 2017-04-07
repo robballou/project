@@ -14,6 +14,15 @@ local:
 
     # this will override local.default.style for a "script". Scripts
     # should be executeable.
+    #
     frontend:
       style: script
       script: $PROJECT/server.js
+
+      # NOTE: "script" and "command" runners are considered "start only"
+      # meaning that they will not run unless you set "stoppable". You can
+      # also set a stop_script or a stop_command option for specific
+      # scripts or commands to run instead.
+      #
+      # stoppable: true
+      # stop_script: $PROJECT/stop_server.js

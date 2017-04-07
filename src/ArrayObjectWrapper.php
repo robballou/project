@@ -76,7 +76,7 @@ class ArrayObjectWrapper implements \Iterator, \JsonSerializable {
     return array_keys($this->array);
   }
 
-  public function get($option) {
+  public function get($option, $default = NULL) {
     if (!is_array($option)) {
       $option = [$option];
     }
@@ -100,7 +100,7 @@ class ArrayObjectWrapper implements \Iterator, \JsonSerializable {
       }
     }
 
-    return NULL;
+    return $default;
   }
 
   public function merge($option, $value) {

@@ -32,6 +32,10 @@ class ScriptRunner extends Runner {
   }
 
   public function stop() {
+    if (!$this->thing->get('stoppable', FALSE)) {
+      return;
+    }
+
     $base = $this->config->getConfigOption('base');
     if (isset($this->thing->base)) {
       $base = $this->thing->base;
@@ -39,9 +43,9 @@ class ScriptRunner extends Runner {
 
     $command = [];
     if ($base) {
-      $command[] = 'cd ' . $this->validatePath($base);
+      $command[] = 'cd ' . escapeshellarg($this->validatePath($base));
     }
-    $command[] = $this->thing->command;
+    $command[] = $this->thing->get(['stop_script', 'script']);
 
     $ex = $this->getExecutor(implode(' && ', $command));
     $ex->execute();

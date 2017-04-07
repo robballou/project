@@ -32,7 +32,7 @@ class TestCommand extends ProjectCommand {
     $style = $config->getConfigOption([
       'test.' . $environment . '.style',
       'test.style',
-    ]);
+    ], 'local');
 
     $tests = $config->getConfigOption('test.' . $environment . '.tests');
     if (!$tests) {
@@ -56,7 +56,7 @@ class TestCommand extends ProjectCommand {
         foreach ($tests as $test => $details) {
           $test_command = '';
           if (isset($details->base) && $path = $this->validatePath($details->base)) {
-            $test_command = 'cd ' . $path . ' && ';
+            $test_command = 'cd ' . escapeshellarg($path) . ' && ';
           }
           $test_command .= $details->command;
           $this_command = $test_command;
@@ -69,7 +69,7 @@ class TestCommand extends ProjectCommand {
         foreach ($tests as $test => $details) {
           $test_command = '';
           if (isset($details->base) && $path = $this->validatePath($details->base)) {
-            $test_command = 'cd ' . $path . ' && ';
+            $test_command = 'cd ' . escapeshellarg($path) . ' && ';
           }
           $test_command .= $details->command;
           $this_command = 'docker-compose exec drupal /bin/bash -c "' . $test_command . '"';
@@ -89,7 +89,7 @@ class TestCommand extends ProjectCommand {
         foreach ($tests as $test => $details) {
           $test_command = '';
           if (isset($details->base) && $path = $this->validatePath($details->base)) {
-            $test_command = 'cd ' . $path . ' && ';
+            $test_command = 'cd ' . escapeshellarg($path) . ' && ';
           }
           $test_command .= $details->command;
           $this_command = 'cd ' . $vagrant_directory . ' && vagrant ssh "' . $test_command . '"';
