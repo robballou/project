@@ -1,0 +1,4 @@
+test:
+  tests:
+    default:
+      command: ./vendor/bin/phpunit
