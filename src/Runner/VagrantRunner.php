@@ -13,6 +13,7 @@ class VagrantRunner extends Runner {
     if (!is_dir($vagrant_directory)) {
       throw new \Exception('The vagrant directory is not a directory: ' . $vagrant_directory);
     }
+    return $vagrant_directory;
   }
 
   /**
