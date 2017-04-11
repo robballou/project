@@ -38,6 +38,18 @@ abstract class Runner {
     return $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE;
   }
 
+  /**
+   * Write out a message if we are verbose...
+   */
+  protected function outputVerbose($message, OutputInterface $output = null) {
+    if (!$output && $this->output) {
+      $output = $this->output;
+    }
+    if ($this->isVerbose()) {
+      $output->writeln($message);
+    }
+  }
+
   abstract public function run();
 
   abstract public function stop();

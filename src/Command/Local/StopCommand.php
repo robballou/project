@@ -33,7 +33,7 @@ class StopCommand extends LocalBaseCommand {
       $runner_class = $this->getRunner($thing);
       $runner = new $runner_class($config, $thing, $input, $output);
       $runner->stop();
-      $this->outputVerbose($output, 'Started: ' . $key);
+      $this->outputVerbose($output, 'Stopped: ' . $key);
     }
   }
 

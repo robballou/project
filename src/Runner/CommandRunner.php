@@ -22,6 +22,7 @@ class CommandRunner extends Runner {
 
   public function stop() {
     if (!$this->thing->get('stoppable', FALSE)) {
+      $this->outputVerbose('Cannot stop this command. If this command can be stopped, add the "stoppable" flag in your project config');
       return;
     }
 

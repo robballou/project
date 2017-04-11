@@ -10,7 +10,7 @@ class DockerComposeRunner extends Runner {
       $base = $this->config->getProjectPath();
     }
 
-    $ex = $this->getExecutor('cd ' . $this->validatePath($base, $this->config) . ' && docker-compose up -d');
+    $ex = $this->getExecutor('cd ' . escapeshellarg($this->validatePath($base, $this->config)) . ' && docker-compose up -d');
     $ex->execute();
   }
 
@@ -20,7 +20,11 @@ class DockerComposeRunner extends Runner {
       $base = $this->config->getProjectPath();
     }
 
-    $ex = $this->getExecutor('cd ' . $this->validatePath($base, $this->config) . ' && docker-compose down');
+    if (!$this->validatePath($base, $this->config)) {
+      throw new \Exception('Could not find project base');
+    }
+
+    $ex = $this->getExecutor('cd ' . escapeshellarg($this->validatePath($base, $this->config)) . ' && docker-compose down');
     $ex->execute();
   }
 

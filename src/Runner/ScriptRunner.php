@@ -33,6 +33,7 @@ class ScriptRunner extends Runner {
 
   public function stop() {
     if (!$this->thing->get('stoppable', FALSE)) {
+      $this->outputVerbose('Cannot stop this script. If this script can be stopped, add the "stoppable" flag in your project config');
       return;
     }
 
