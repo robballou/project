@@ -1,9 +1,17 @@
 <?php
+
 namespace Project\Runner;
 
 use Project\Runner\Runner;
 
+/**
+ * Handles running and stopping vagrant local environments.
+ */
 class VagrantRunner extends Runner {
+
+  /**
+   * Get the vagrant directory for this local.
+   */
   protected function getVagrantDirectory() {
     $vagrant_directory = $this->validatePath($this->thing->get(['vagrant_directory', 'base']), $this->config);
     if (!$vagrant_directory) {

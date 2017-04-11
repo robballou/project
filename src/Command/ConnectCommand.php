@@ -70,12 +70,23 @@ class ConnectCommand extends ProjectCommand {
         // we need the vagrant directory...
         $vagrant_directory = $config->getConfigOption([
           'connect.' . $environment . '.vagrant_directory',
+          'connect.' . $environment . '.base',
           'connect.vagrant_directory',
+          'connect.base',
           'local.' . $environment . '.vagrant_directory',
+          'local.' . $environment . '.base',
+          'local.default.vagrant_directory',
+          'local.default.base',
           'local.vagrant_directory',
+          'local.base',
         ]);
 
-        $this_command = 'cd ' . $vagrant_directory . ' && vagrant ssh';
+        $vagrant_directory = $this->validatePath($vagrant_directory, $config);
+        if (!$vagrant_directory) {
+          throw new \Exception('Could not find vagrant directory');
+        }
+
+        $this_command = 'cd ' . escapeshellarg($vagrant_directory) . ' && vagrant ssh';
         break;
 
       case 'docker-compose':

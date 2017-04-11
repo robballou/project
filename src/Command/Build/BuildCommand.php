@@ -69,12 +69,19 @@ class BuildCommand extends ProjectCommand {
 
     $this->outputVerbose($output, 'Running: ' . implode(', ', $things->getKeys()));
     foreach ($things as $key => $thing) {
-      $style = $thing->style;
+      if (!$thing) {
+        throw new \Exception('Could not find thing: ' . $key);
+      }
+      $style = $thing->get('style');
       if (!$style && isset($thing->script)) {
         $style = 'script';
       }
       elseif (!$style && isset($thing->command)) {
         $style = 'command';
+      }
+
+      if (!$style) {
+        throw new \Exception('No build style found: ' . json_encode($thing));
       }
 
       $command = [];
