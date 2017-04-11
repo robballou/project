@@ -78,6 +78,9 @@ Commands dealing with local development:
     # restart local dev
     project local:restart
 
+    # list local components that can be controlled
+    project local:list
+
 Planned support:
 
 - vagrant
