@@ -75,6 +75,22 @@ class DrushCommand extends ProjectCommand {
         ], 'drupal');
         $this_command = 'docker-compose exec ' . $container . ' /bin/bash -c "' . $pre . 'drush' . $options . $command . '"';
         break;
+
+      case 'drocker':
+        $pre = '';
+
+        if (isset($config->web_root)) {
+          $pre = 'cd ' . $config->web_root . ' && ';
+        }
+        elseif (isset($command_config->web_root)) {
+          $pre = 'cd ' . $command_config->web_root . ' && ';
+        }
+
+        $this_command = $pre . 'drocker drush ' . $options . $command;
+        if (isset($command_config->ssh)) {
+          $this_command = 'ssh ' . $command_config->ssh . ' "' . addslashes($this_command) . '"';
+        }
+        break;
     }
 
     $ex = new Executor($this_command);

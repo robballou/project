@@ -87,7 +87,7 @@ class BuildCommand extends ProjectCommand {
       $command = [];
       if ($style == 'script' || $style == 'command') {
         if (isset($thing->base)) {
-          $command[] = 'cd ' . $this->validatePath($thing->base);
+          $command[] = 'cd ' . $this->validatePath($thing->base, $config);
         }
 
         if ($style == 'script') {

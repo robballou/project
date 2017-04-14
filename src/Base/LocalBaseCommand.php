@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class LocalBaseCommand extends ProjectCommand {
+
   protected function applyDefaultValues($default, &$processed_things) {
     if ($default) {
       foreach (array_keys($processed_things) as $key) {
@@ -101,30 +102,6 @@ abstract class LocalBaseCommand extends ProjectCommand {
     $this->applyDefaultValues($default, $processed_things);
 
     return new ArrayObjectWrapper($processed_things);
-  }
-
-  protected function getRunner($thing) {
-    $style = $thing->style;
-    if (!$style) {
-      throw new \Exception('Invalid style for this local component: ' . json_encode($thing));
-    }
-
-    if (isset($thing->runner)) {
-      return $thing->runner;
-    }
-
-    $map = [
-      'vagrant' => 'Project\Runner\VagrantRunner',
-      'docker-compose' => 'Project\Runner\DockerComposeRunner',
-      'docker' => 'Project\Runner\DockerRunner',
-      'script' => 'Project\Runner\ScriptRunner',
-      'command' => 'Project\Runner\CommandRunner',
-    ];
-    if (in_array($style, array_keys($map))) {
-      return $map[$style];
-    }
-
-    return NULL;
   }
 
 }

@@ -11,15 +11,16 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Base command support
  */
 abstract class ProjectCommand extends Command {
-
   use \Project\Traits\PathTrait;
+  use \Project\Traits\RunnerTrait;
 
   protected function getExecutor($command, OutputInterface $output = NULL) {
     if (!$output && $this->output) {
       $output = $this->output;
     }
 
-    $ex = new Executor($command, $output);
+    var_dump($this->getApplication()->config);
+    $ex = new Executor($command, $output, $this->getApplication()->config);
     if ($output && $output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
       $ex->outputCommand($output);
     }

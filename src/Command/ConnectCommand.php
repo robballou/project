@@ -101,6 +101,22 @@ class ConnectCommand extends ProjectCommand {
         }
         $this_command = 'docker-compose exec ' . $container . ' /bin/bash';
         break;
+
+      case 'drocker':
+        $base = $config->getConfigOption([
+          'connect.' . $environment . '.base',
+          'connect.default.base',
+          'local.' . $environment . '.base',
+          'local.base',
+        ]);
+
+        $base = $this->validatePath($base, $config);
+        if (!$base) {
+          throw new \Exception('Could not find base directory');
+        }
+
+        $this_command = 'cd ' . escapeshellarg($base) . ' && drocker connect';
+        break;
     }
 
     // better processing...

@@ -2,6 +2,7 @@
 
 namespace Project\Executor;
 
+use Project\Configuration;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -11,11 +12,25 @@ class Executor {
   public $command = '';
 
   protected $pre = [];
+  protected $sources = [];
   protected $post = [];
 
-  public function __construct($command, OutputInterface $output = NULL) {
+  public function __construct($command, OutputInterface $output = NULL, Configuration $config = NULL) {
     $this->command = $command;
     $this->output = $output;
+    $this->config = $config;
+
+    if ($this->config) {
+      $pre = $this->config->getConfigOption('options.executor.pre');
+      if ($pre) {
+        $this->pre = $pre;
+      }
+
+      $sources = $this->config->getConfigOption('options.executor.sources');
+      if ($sources) {
+        $this->sources = $sources;
+      }
+    }
   }
 
   public function execute($command = NULL) {
@@ -31,7 +46,16 @@ class Executor {
       call_user_func($pre_command, $command);
     }
 
-    $process = proc_open($command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
+    $current_shell = getenv('SHELL');
+    $shell = ($current_shell) ? $current_shell : 'bash';
+    if ($this->config) {
+      $shell = $this->config->getConfigOption('options.shell', $shell);
+    }
+
+    $real_command = $shell . ' -lc "';
+    $real_command .= addslashes($command) . '"';
+
+    $process = proc_open($real_command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
     $this->processStatus = proc_get_status($process);
     $this->exitCode = proc_close($process);
     return $this;
