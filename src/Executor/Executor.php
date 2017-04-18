@@ -53,12 +53,16 @@ class Executor {
     }
 
     $real_command = $shell . ' -lc "';
-    $real_command .= addslashes($command) . '"';
+    $real_command .= $this->escape($command) . '"';
 
     $process = proc_open($real_command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
     $this->processStatus = proc_get_status($process);
     $this->exitCode = proc_close($process);
     return $this;
+  }
+
+  protected function escape($string) {
+    return str_replace('"', '\\"', $string);
   }
 
   protected function output($command) {
