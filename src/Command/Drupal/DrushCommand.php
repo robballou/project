@@ -24,7 +24,7 @@ class DrushCommand extends ProjectCommand {
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     $config = $this->getApplication()->config;
-    $command_config = $this->getApplication()->config->getCommandConfig('drush', $input);
+    $command_config = $config->getCommandConfig('drush', $input);
 
     if (!$command_config) {
       $error = $output->getErrorOutput();
@@ -61,7 +61,16 @@ class DrushCommand extends ProjectCommand {
       case 'alias':
       case 'drush-alias':
         $alias = $command_config->get([$environment . '.alias', 'alias']);
-        $this_command = 'drush @' . $alias . $options . $command;
+        $this_command = 'drush ';
+        if ($alias) {
+          $this_command .= $alias;
+        }
+        $this_command .= $options . $command;
+        break;
+
+      case 'terminus':
+        $alias = $command_config->get([$environment . '.alias', 'alias']);
+        $this_command = 'terminus drush ' . $alias . $options . $command;
         break;
 
       case 'docker-compose':

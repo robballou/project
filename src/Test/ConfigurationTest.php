@@ -33,6 +33,30 @@ class ConfigurationTest extends TestCase {
     $this->assertEquals('vagrant', $config->local->style);
   }
 
+  public function testGetFilesFromChildDirectoryWithLocalFile() {
+    $config = new Configuration(__DIR__ . '/fixtures/configuration/withlocal');
+    $files = $config->getConfigFiles();
+
+    // strip out the project's own .project config file 😁
+    $config_files = [];
+    array_map(function ($file) use (&$config_files) {
+      if (strpos($file, 'fixtures') !== FALSE) {
+        $config_files[] = $file;
+      }
+    }, $files);
+
+    $this->assertTrue(is_array($config_files));
+    $this->assertCount(3, $config_files);
+    $this->assertTrue(boolval(preg_match('/configuration\/\.project\/config\.yml$/', $config_files[0])), "The parent config files should be loaded first");
+    $this->assertTrue(boolval(preg_match('/configuration\/withlocal\/\.project\/config\.yml$/', $config_files[1])), "The child config files should be loaded second to last");
+    $this->assertTrue(boolval(preg_match('/configuration\/withlocal\/\.project\/config\.local\.yml$/', $config_files[2])), "The config.local.yml config file should be loaded last");
+  }
+
+  public function testGetConfigWithLocalFile() {
+    $config = new Configuration(__DIR__ . '/fixtures/configuration/withlocal');
+    $this->assertEquals('http://overwrite.example.com', $config->url->stage);
+  }
+
   public function testGetCommandConfig() {
     $config = new Configuration(__DIR__ . '/fixtures/configuration/example');
     $connect = $config->getCommandConfig('connect');

@@ -47,6 +47,9 @@ class Configuration extends ArrayObjectWrapper {
 
     $last = NULL;
     while ($current_directory) {
+      if (file_exists($current_directory . '/.project/config.local.yml')) {
+        $config_files[] = $current_directory . '/.project/config.local.yml';
+      }
       if (file_exists($current_directory . '/.project/config.yml')) {
         $config_files[] = $current_directory . '/.project/config.yml';
       }

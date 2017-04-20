@@ -19,7 +19,6 @@ abstract class ProjectCommand extends Command {
       $output = $this->output;
     }
 
-    var_dump($this->getApplication()->config);
     $ex = new Executor($command, $output, $this->getApplication()->config);
     if ($output && $output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
       $ex->outputCommand($output);

@@ -27,14 +27,21 @@ class CreateCommand extends ProjectCommand {
     $dir = $current . '/.project';
     if (!is_dir($dir)) {
       mkdir($dir, 0775);
+      $this->outputVerbose($output, 'Created ' . $dir);
     }
 
     $file = $dir . '/config.yml';
     if (!is_file($file)) {
       file_put_contents($file, "\n");
+      $this->outputVerbose($output, 'Created ' . $file);
     }
 
-    $this->outputVerbose($output, 'Created ' . $file);
+    $file = $dir . '/.gitignore';
+    if (!is_file($file)) {
+      file_put_contents($file, "config.local.yml\n");
+      $this->outputVerbose($output, 'Created ' . $file);
+    }
+
   }
 
 }

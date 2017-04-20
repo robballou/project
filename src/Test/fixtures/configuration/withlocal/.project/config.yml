@@ -1,0 +1,15 @@
+base: ~/git/example
+local:
+  style: vagrant
+connect:
+  style: docker-compose
+  container: drupal
+command:
+  options:
+    thing: 123
+  environment:
+    style: shh
+
+url:
+  stage: http://staging.example.com
+  prod: http://example.com

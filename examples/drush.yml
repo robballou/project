@@ -17,3 +17,7 @@ drush:
   stage:
     style: drush-alias
     alias: example.stage
+
+  environ:
+    style: terminus
+    alias: site.env
