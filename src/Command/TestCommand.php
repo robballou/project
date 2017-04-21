@@ -15,7 +15,7 @@ class TestCommand extends ProjectCommand {
       // the name of the command (the part after "bin/console")
       ->setName('test')
       // the short description shown while running "php bin/console list"
-      ->setDescription('Connect via ssh/bash to the local site')
+      ->setDescription('Run tests')
       ->addArgument('test', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Optional list of tests to run')
     ;
   }
@@ -27,6 +27,8 @@ class TestCommand extends ProjectCommand {
     $config = $this->getApplication()->config;
     $environment = $config->getEnvironment($input);
 
+    $requested_tests = $input->getArgument('test');
+
     // get the first one of the following options to figure out the style of
     // connection...
     $style = $config->getConfigOption([
@@ -34,10 +36,11 @@ class TestCommand extends ProjectCommand {
       'test.style',
     ], 'local');
 
-    $tests = $config->getConfigOption('test.' . $environment . '.tests');
+    $tests = $config->getConfigOption(['test.' . $environment . '.tests', 'test']);
     if (!$tests) {
       $tests = [];
     }
+
     $global_tests = $config->getConfigOption('test.tests');
     if ($global_tests) {
       if (is_object($global_tests)) {
@@ -49,13 +52,21 @@ class TestCommand extends ProjectCommand {
       $tests = new ArrayObjectWrapper(array_merge($tests, $global_tests));
     }
 
+    // filter tests
+    if (!empty($requested_tests)) {
+      $tests = array_filter($tests->getArray(), function ($key) use ($requested_tests) {
+        return in_array($key, $requested_tests);
+      }, ARRAY_FILTER_USE_KEY);
+      $tests = new ArrayObjectWrapper($tests);
+    }
+
     $commands = [];
 
     switch ($style) {
       case 'local':
         foreach ($tests as $test => $details) {
           $test_command = '';
-          if (isset($details->base) && $path = $this->validatePath($details->base)) {
+          if (isset($details->base) && $path = $this->validatePath($details->base, $config)) {
             $test_command = 'cd ' . escapeshellarg($path) . ' && ';
           }
           $test_command .= $details->command;
@@ -68,7 +79,7 @@ class TestCommand extends ProjectCommand {
       case 'docker-compose':
         foreach ($tests as $test => $details) {
           $test_command = '';
-          if (isset($details->base) && $path = $this->validatePath($details->base)) {
+          if (isset($details->base) && $path = $this->validatePath($details->base, $config)) {
             $test_command = 'cd ' . escapeshellarg($path) . ' && ';
           }
           $test_command .= $details->command;
@@ -88,7 +99,7 @@ class TestCommand extends ProjectCommand {
 
         foreach ($tests as $test => $details) {
           $test_command = '';
-          if (isset($details->base) && $path = $this->validatePath($details->base)) {
+          if (isset($details->base) && $path = $this->validatePath($details->base, $config)) {
             $test_command = 'cd ' . escapeshellarg($path) . ' && ';
           }
           $test_command .= $details->command;
@@ -96,6 +107,10 @@ class TestCommand extends ProjectCommand {
           $commands[$test] = $this_command;
         }
         break;
+    }
+
+    if (empty($commands)) {
+      throw new \Exception('No tests to run');
     }
 
     foreach ($commands as $test_name => $this_command) {
