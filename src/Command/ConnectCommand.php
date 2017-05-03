@@ -81,9 +81,10 @@ class ConnectCommand extends ProjectCommand {
           'local.base',
         ]);
 
+        $original = $vagrant_directory;
         $vagrant_directory = $this->validatePath($vagrant_directory, $config);
         if (!$vagrant_directory) {
-          throw new \Exception('Could not find vagrant directory');
+          throw new \Exception('Could not find vagrant directory: ' . $original);
         }
 
         $this_command = 'cd ' . escapeshellarg($vagrant_directory) . ' && vagrant ssh';
