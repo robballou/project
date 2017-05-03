@@ -65,9 +65,17 @@ trait PathTrait {
       array_push($variable_names, '~');
       array_push($variable_values, $home);
     }
+
+    if ($git_home = getenv('GIT_HOME')) {
+      $variable_names[] = '$GIT_HOME';
+      $variable_values[] = $git_home;
+    }
     return str_replace($variable_names, $variable_values, $path);
   }
 
+  /**
+   * Replace variables and get the realpath() for the result.
+   */
   protected function validatePath($path, Configuration $config = NULL) {
     return realpath($this->replacePathVariables($path, $config));
   }
