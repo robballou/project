@@ -57,7 +57,7 @@ Connect to the environment via a shell (e.g., via SSH or docker).
 
 Commands dealing with local development:
 
-    # start any local dev environments
+    # start the default dev environments
     project local:run
     project local:start
     project local:up
@@ -71,11 +71,11 @@ Commands dealing with local development:
     # run two things
     project local:run default api
 
-    # stop any local dev environments
+    # stop the default dev environments
     project local:stop
     project local:down
 
-    # restart local dev
+    # restart the default local dev
     project local:restart
 
     # list local components that can be controlled

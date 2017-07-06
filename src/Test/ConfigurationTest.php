@@ -179,4 +179,14 @@ class ConfigurationTest extends TestCase {
     }
   }
 
+  /**
+   * Test Configuration::setConfig()
+   */
+  public function testSetConfig() {
+    $config = new Configuration();
+    $config->setConfig(['test' => 123]);
+
+    $this->assertEquals(123, $config->test);
+  }
+
 }

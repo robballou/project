@@ -21,17 +21,20 @@ abstract class LocalBaseCommand extends ProjectCommand {
     }
   }
 
-  protected function getDefaultThings() {
+  protected function getDefaultThings($all = FALSE) {
     $config = $this->getApplication()->config;
 
     // get any default configuration first.
-    $default = $config->getConfigOption('local.default');
+    $default = $config->getConfigOption(['local.components.default', 'local.default']);
 
-    $things = $config->getConfigOption('local.components');
-    if (!$things && $default) {
-      $things = new ArrayObjectWrapper(['default' => $default]);
+    if (!$all && $default) {
+      return new ArrayObjectWrapper(['default' => $default]);
+    }
+    elseif (!$all && !$default) {
+      return [];
     }
 
+    $things = $config->getConfigOption('local.components');
     return $things;
   }
 
@@ -49,7 +52,7 @@ abstract class LocalBaseCommand extends ProjectCommand {
 
     // if the user did not specify things, we will automatically update them.
     if (!$things) {
-      $things = $this->getDefaultThings();
+      $things = $this->getDefaultThings($input->getOption('all', FALSE));
     }
 
     // at this point, if we can't find anything to run, then we shouldn't

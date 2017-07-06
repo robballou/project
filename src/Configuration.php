@@ -13,6 +13,8 @@ class Configuration extends ArrayObjectWrapper {
   protected $files = [];
   protected $startingDirectory = NULL;
 
+  protected $providers = [];
+
   public function __construct($directory = NULL) {
     $this->getConfig($directory);
   }
@@ -128,6 +130,13 @@ class Configuration extends ArrayObjectWrapper {
     return $commands;
   }
 
+  /**
+   * Load configuration from a directory.
+   *
+   * @param string $directory
+   *   Optional directory to load configuration from. See
+   *   Configuration::getConfigFiles() for more info.
+   */
   public function getConfig($directory = NULL) {
     if ($this->array) {
       return $this->array;
@@ -144,11 +153,11 @@ class Configuration extends ArrayObjectWrapper {
       $config = array_merge($config, $this_config);
     }
 
-    $this->array = $config;
+    $this->setConfig($config);
     return $this->array;
   }
 
-  public function getConfigOption($option, $default=NULL) {
+  public function getConfigOption($option, $default = NULL) {
     if (!is_array($option)) {
       $option = [$option];
     }
@@ -173,6 +182,10 @@ class Configuration extends ArrayObjectWrapper {
     return $default;
   }
 
+  public function getStyleName($style) {
+    return str_replace('-', '_', $style);
+  }
+
   public function getProjectPath() {
     $base = $this->getConfigOption('base');
     if (!$base) {
@@ -182,4 +195,38 @@ class Configuration extends ArrayObjectWrapper {
     }
     return $base;
   }
+
+  public function getProviderClass($style = NULL) {
+    $provider = 'Project\Provider\ShellProvider';
+
+    $default_providers = [
+      'drush' => 'Project\Provider\Drupal\DrupalCommandProvider',
+    ];
+
+    if ($style) {
+      if (isset($this->providers[$style])) {
+        return $this->providers[$style];
+      }
+      $provider_option = $this->getConfigOption('options.providers.' . $this->getStyleName($style));
+      if ($provider_option) {
+        $this->providers[$style] = $provider_option;
+        return $this->providers[$style];
+      }
+
+      if (isset($default_providers[$style])) {
+        $this->providers[$style] = $default_providers[$style];
+        return $this->providers[$style];
+      }
+    }
+
+    return $provider;
+  }
+
+  /**
+   * Set the configuration array.
+   */
+  public function setConfig(array $config) {
+    $this->array = $config;
+  }
+
 }

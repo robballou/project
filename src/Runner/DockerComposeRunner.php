@@ -14,7 +14,12 @@ class DockerComposeRunner extends Runner {
       throw new \Exception('Could not find project base: ' . $base);
     }
 
-    $ex = $this->getExecutor('cd ' . escapeshellarg($this->validatePath($base, $this->config)) . ' && docker-compose up -d');
+    $file = $this->thing->get('file', '');
+    if ($file) {
+      $file = '-f ' . escapeshellarg($file);
+    }
+
+    $ex = $this->getExecutor('cd ' . escapeshellarg($this->validatePath($base, $this->config)) . ' && docker-compose ' . $file . ' up -d');
     $ex->execute();
   }
 
@@ -28,7 +33,12 @@ class DockerComposeRunner extends Runner {
       throw new \Exception('Could not find project base: ' . $base);
     }
 
-    $ex = $this->getExecutor('cd ' . escapeshellarg($this->validatePath($base, $this->config)) . ' && docker-compose down');
+    $file = $this->thing->get('file', '');
+    if ($file) {
+      $file = '-f ' . escapeshellarg($file);
+    }
+
+    $ex = $this->getExecutor('cd ' . escapeshellarg($this->validatePath($base, $this->config)) . " && docker-compose $file down");
     $ex->execute();
   }
 

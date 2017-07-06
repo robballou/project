@@ -8,6 +8,7 @@ use Project\Executor\Executor;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class RunCommand extends LocalBaseCommand {
   protected function configure() {
@@ -18,6 +19,8 @@ class RunCommand extends LocalBaseCommand {
 
       // the short description shown while running "php bin/console list"
       ->setDescription('Run the local environment')
+
+      ->addOption('all', 'a', InputOption::VALUE_NONE, 'Run all things')
 
       ->addArgument('thing', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Optional thing(s) to run')
     ;

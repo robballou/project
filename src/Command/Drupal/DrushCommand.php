@@ -63,6 +63,9 @@ class DrushCommand extends ProjectCommand {
         $alias = $command_config->get([$environment . '.alias', 'alias']);
         $this_command = 'drush ';
         if ($alias) {
+          if ($alias[0] != '@') {
+            $alias = "@$alias";
+          }
           $this_command .= $alias;
         }
         $this_command .= $options . $command;
