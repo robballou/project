@@ -22,6 +22,13 @@ class ConnectCommand extends ProjectCommand {
     $config = $this->getApplication()->config;
     $environment = $config->getEnvironment($input);
 
+    $command_config = $config->getCommandConfig('connect', $input);
+    if (!$command_config) {
+      $error = $output->getErrorOutput();
+      $error->writeln('<error>This project is not configured to use the connect command.</error>');
+      exit(1);
+    }
+
     // get the first one of the following options to figure out the style of
     // connection...
     $style = $config->getConfigOption([
