@@ -40,6 +40,13 @@ abstract class ProjectCommand extends Command {
     return $this->commandProvider;
   }
 
+  protected function getErrorOutput(OutputInterface $output) {
+    if (method_exists($output, 'getErrorOutput')) {
+      return $output->getErrorOutput();
+    }
+    return $output;
+  }
+
   /**
    * Check if the array is associative...
    */

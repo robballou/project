@@ -1,6 +1,9 @@
+# definition for the test command
 test:
+  # this will run if you just run "project test"
   default:
     style: local
+  # this will run if you run "project test phpunit"
   phpunit:
     base: $PROJECT
-    command: phpunit
+    command: ./vendor/bin/phpunit

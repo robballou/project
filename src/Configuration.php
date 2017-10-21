@@ -201,6 +201,8 @@ class Configuration extends ArrayObjectWrapper {
 
     $default_providers = [
       'drush' => 'Project\Provider\Drupal\DrupalCommandProvider',
+      'docker-compose' => 'Project\Provider\DockerComposeProvider',
+      'ssh' => 'Project\Provider\SSHProvider',
     ];
 
     if ($style) {

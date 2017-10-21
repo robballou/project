@@ -1,0 +1,5 @@
+connect:
+  default:
+    style: ssh
+    host: example.com
+    user: example

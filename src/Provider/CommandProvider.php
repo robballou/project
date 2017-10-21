@@ -3,6 +3,7 @@
 namespace Project\Provider;
 
 use Project\Configuration;
+use Project\ArrayObjectWrapper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -25,9 +26,26 @@ abstract class CommandProvider {
    */
   abstract public function get(InputInterface $input, OutputInterface $output);
 
+  protected function getSubcommandFunction($subcommand) {
+    $sub = array_map('ucfirst', explode('_', $subcommand));
+    return 'subcommand' . implode('', $sub);
+  }
+
+  /**
+   * Set one of the things.
+   */
   public function set($thing) {
     $this->things[] = $thing;
     return $this;
+  }
+
+  public function subcommand(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $subcommand, $this_command) {
+    $subcommand_function = $this->getSubcommandFunction($subcommand);
+    if (!method_exists($this, $subcommand_function)) {
+      throw new \Exception('The docker-compose command provider does not have a subcommand: ' . $subcommand);
+    }
+
+    return call_user_func([$this, $subcommand_function], $input, $output, $details, $this_command);
   }
 
 }
