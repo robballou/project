@@ -4,6 +4,14 @@ local:
       style: vagrant
     other:
       style: docker-compose
+    image:
+      style: docker
 connect:
   default:
     style: vagrant
+  other:
+    style: docker-compose
+    container: local2
+  image:
+    style: docker
+    container: local2

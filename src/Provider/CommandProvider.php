@@ -11,6 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Build a command specifically for some tool.
  */
 abstract class CommandProvider {
+  use \Project\Traits\PathTrait;
+
   protected $config;
   protected $things = [];
 

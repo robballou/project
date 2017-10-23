@@ -38,18 +38,20 @@ class ScriptCommand extends ProjectCommand {
       throw new \Exception('Could not find script: ' . $name);
     }
 
-    $this_command = '';
-
-    $path = $this->validatePath($script->script, $config);
-    if (isset($script->base)) {
-      $this_command = 'cd ' . $script->base . ' && ';
-    }
-
-    $this_command = $path;
-
-    if ($args = $input->getArgument('args')) {
-      $this_command .= ' ' . implode(' ', $args);
-    }
+    // $this_command = '';
+    //
+    // $path = $this->validatePath($script->script, $config);
+    // if (isset($script->base)) {
+    //   $this_command = 'cd ' . $script->base . ' && ';
+    // }
+    //
+    // $this_command = $path;
+    //
+    // if ($args = $input->getArgument('args')) {
+    //   $this_command .= ' ' . implode(' ', $args);
+    // }
+    $provider = $this->getCommandProvider('shell');
+    $this_command = $provider->get($input, $output, $script, 'exec');
 
     $ex = $this->getExecutor($this_command, $output);
     $ex->execute();

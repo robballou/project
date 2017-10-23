@@ -13,3 +13,10 @@ command:
 url:
   stage: http://staging.example.com
   prod: http://example.com
+
+script:
+  run:
+    script: run.sh
+  dir:
+    script: dir.sh
+    base: $PROJECT/scripts

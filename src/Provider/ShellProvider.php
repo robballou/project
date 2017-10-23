@@ -23,7 +23,11 @@ class ShellProvider extends CommandProvider {
     }
 
     $this_command = '';
-    if (isset($details->base) && $path = $this->validatePath($details->base, $this->config)) {
+    if (isset($details->base)) {
+      $path = $this->validatePath($details->base, $this->config);
+      if (!$path) {
+        throw new \Exception('Could not validate the base path for this script: ' . $details->base);
+      }
       $this_command = 'cd ' . escapeshellarg($path) . ' && ';
     }
 

@@ -93,7 +93,7 @@ class LocalTest extends TestCase {
       [
         'input' => [],
         'all' => TRUE,
-        'expect' => ['default' => ['style' => 'vagrant'], 'other' => ['style' => 'docker-compose']],
+        'expect' => ['default' => ['style' => 'vagrant'], 'other' => ['style' => 'docker-compose'], 'image' => ['style' => 'docker']],
       ],
       [
         'input' => [],
