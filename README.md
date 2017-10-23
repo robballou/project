@@ -45,6 +45,20 @@ build:
 
 Then you can run: `project build dev`
 
+### config
+
+    # create the .project directory
+    project config:create
+
+    # view the examples/connect.yml example
+    project config:example connect
+
+    # list all the configuration in use for this directory
+    project config:list
+
+    # list all the source files from the current directory
+    project config:sources
+
 ### connect
 
 * [Example config](https://github.com/robballou/src/master/examples/connect.yml)

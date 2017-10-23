@@ -203,6 +203,7 @@ class Configuration extends ArrayObjectWrapper {
       'drush' => 'Project\Provider\Drupal\DrupalCommandProvider',
       'docker-compose' => 'Project\Provider\DockerComposeProvider',
       'ssh' => 'Project\Provider\SSHProvider',
+      'vagrant' => 'Project\Provider\VagrantProvider',
     ];
 
     if ($style) {

@@ -4,3 +4,6 @@ local:
       style: vagrant
     other:
       style: docker-compose
+connect:
+  default:
+    style: vagrant

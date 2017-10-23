@@ -26,6 +26,9 @@ abstract class CommandProvider {
    */
   abstract public function get(InputInterface $input, OutputInterface $output);
 
+  /**
+   * Get the name of the subcommand method.
+   */
   protected function getSubcommandFunction($subcommand) {
     $sub = array_map('ucfirst', explode('_', $subcommand));
     return 'subcommand' . implode('', $sub);
@@ -45,7 +48,15 @@ abstract class CommandProvider {
       throw new \Exception('The docker-compose command provider does not have a subcommand: ' . $subcommand);
     }
 
-    return call_user_func([$this, $subcommand_function], $input, $output, $details, $this_command);
+    // build an array of arguments of the 4 that we need and then any remaining
+    // args passed to this function.
+    $args = [$input, $output, $details, $this_command];
+    $function_args = func_get_args();
+    if (count($function_args) > 5) {
+      $args = $args + array_slice($function_args, 5);
+    }
+
+    return call_user_func_array([$this, $subcommand_function], $args);
   }
 
 }

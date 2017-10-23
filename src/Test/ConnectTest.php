@@ -55,4 +55,15 @@ class ConnectTest extends TestCase {
     $this->assertEquals("ssh 'example@example.com' -t \"bash --login\"", trim($display));
   }
 
+  public function testVagrant() {
+    $this->before(__DIR__ . '/fixtures/configuration/local2');
+    $input = new ArrayInput([]);
+    $output = new StreamOutput(fopen('php://memory', 'w', false));
+    $this->command->run($input, $output);
+
+    rewind($output->getStream());
+    $display = stream_get_contents($output->getStream());
+    $this->assertEquals("vagrant ssh", trim($display));
+  }
+
 }
