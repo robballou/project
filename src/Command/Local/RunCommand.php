@@ -30,10 +30,15 @@ class RunCommand extends LocalBaseCommand {
     $config = $this->getApplication()->config;
 
     $things = $this->resolveThings($input, $output);
+    if (!$things) {
+      throw new \Exception('Could not resolve the components for this command');
+    }
 
     $this->outputVerbose($output, 'Running: ' . implode(', ', $things->getKeys()));
     foreach ($things as $key => $thing) {
       $this->outputVerbose($output, 'Running: ' . json_encode($thing, JSON_PRETTY_PRINT));
+
+      $this->pre($input, $output, $thing);
 
       $runner_class = $this->getRunner($thing);
       if (!$runner_class) {
@@ -42,6 +47,8 @@ class RunCommand extends LocalBaseCommand {
       $runner = new $runner_class($config, $thing, $input, $output);
       $runner->run();
       $this->outputVerbose($output, 'Started: ' . $key);
+
+      $this->post($input, $output, $thing);
     }
   }
 

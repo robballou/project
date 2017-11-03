@@ -23,7 +23,18 @@ $application->getDefinition()->addOption(
 $commands = $application->config->getCommands();
 
 foreach ($commands as $command) {
-  $application->add(new $command());
+  if (is_array($command)) {
+    $class = $command[0];
+    $args = array_slice($command, 1);
+    $application->add(new $class(...$args));
+    continue;
+  }
+
+  try {
+    $application->add(new $command());
+  }
+  catch (Symfony\Component\Console\Exception\LogicException $e) {
+  }
 }
 
 $application->run();

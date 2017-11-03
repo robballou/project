@@ -4,6 +4,7 @@ namespace Project\Base;
 
 use Project\Base\ProjectCommand;
 use Project\ArrayObjectWrapper;
+use Project\Executor\Executor;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -36,6 +37,54 @@ abstract class LocalBaseCommand extends ProjectCommand {
 
     $things = $config->getConfigOption('local.components');
     return $things;
+  }
+
+  /**
+   * Execute pre commands.
+   *
+   * @param InputInterface $input
+   * @param OutputInterface $output
+   * @param ArrayObjectWrapper $thing
+   * @return void
+   */
+  protected function pre(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $thing) {
+    $config = $this->getApplication()->config;
+    $pre = $thing->get('pre', []);
+    $pre = new ArrayObjectWrapper($pre);
+    foreach ($pre as $action) {
+      $this->outputVerbose($output, 'Pre: ' . var_export($action->getArray(), TRUE));
+      $style = $action->get('style');
+      if (!$style && $action->get(['command', 'script'])) {
+        $style = 'shell';
+      }
+      $provider = $this->getCommandProvider($style);
+      $pre_command = $provider->get($input, $output, $action);
+      $ex = $this->getExecutor($pre_command, $output);
+      $ex->execute();
+    }
+  }
+
+  /**
+   * Execute post commands.
+   *
+   * @param InputInterface $input
+   * @param OutputInterface $output
+   * @param ArrayObjectWrapper $thing
+   * @return void
+   */
+  protected function post(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $thing) {
+    $post = $thing->get('post', []);
+    foreach ($post as $action) {
+      $this->outputVerbose($output, 'Post: ' . $action);
+      $style = $action->get('style');
+      if (!$style && $action->get(['command', 'script'])) {
+        $style = 'shell';
+      }
+      $provider = $config->getProvider($style);
+      $pre_command = $provider->get($input, $output, $action);
+      $ex = $this->getExecutor($pre_command, $output);
+      $ex->execute();
+    }
   }
 
   /**

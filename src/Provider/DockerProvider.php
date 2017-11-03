@@ -16,7 +16,7 @@ class DockerProvider extends CommandProvider {
   /**
    * {@inheritDoc}
    */
-  public function get(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details = NULL, $subcommand = 'exec') {
+  public function get(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details = NULL, $subcommand = 'exec', ...$args) {
     $environment = $this->config->getEnvironment($input);
 
     $file = $details->get('file');
@@ -29,7 +29,7 @@ class DockerProvider extends CommandProvider {
       $this_command .= ' -f ' . $file;
     }
 
-    return $this->subcommand($input, $output, $details, $subcommand, $this_command);
+    return $this->subcommand($input, $output, $details, $subcommand, $this_command, $args);
   }
 
   /**
@@ -50,13 +50,16 @@ class DockerProvider extends CommandProvider {
   /**
    * Handle general exec commands.
    */
-  public function subcommandExec(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command) {
+  public function subcommandExec(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command, $extra_args = []) {
     $container = $details->container;
     if (!$container) {
       throw new \Exception('No container is set for this environment');
     }
-
-    return $this_command . ' exec ' . escapeshellarg($container);
+    $extra_args = implode(' ', $extra_args);
+    if ($extra_args) {
+      $extra_args = ' ' . $extra_args;
+    }
+    return $this_command . ' exec ' . escapeshellarg($container) . $extra_args;
   }
 
 

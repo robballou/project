@@ -15,10 +15,19 @@ class Configuration extends ArrayObjectWrapper {
 
   protected $providers = [];
 
+  /**
+   * Constructor.
+   */
   public function __construct($directory = NULL) {
     $this->getConfig($directory);
   }
 
+  /**
+   * Get the environment for the current command.
+   *
+   * @param InputInterface $input
+   * @return string
+   */
   public function getEnvironment(InputInterface $input) {
     if ($environment = $input->getOption('environment')) {
       return $environment;
@@ -26,6 +35,12 @@ class Configuration extends ArrayObjectWrapper {
     return 'default';
   }
 
+  /**
+   * Get the config files based on a directory path.
+   *
+   * @param string $current_directory
+   * @return array
+   */
   public function getConfigFiles($current_directory = NULL) {
     // check if the user's home directory has a configuration file
     if ($this->files) {
@@ -67,6 +82,16 @@ class Configuration extends ArrayObjectWrapper {
     return $config_files;
   }
 
+  /**
+   * Get the configuration for a given command.
+   * 
+   * If not available/not found, it will return NULL. Otherwise it will be an
+   * ArrayObjectWrapper.
+   *
+   * @param string $command
+   * @param InputInterface $input
+   * @return mixed
+   */
   public function getCommandConfig($command = NULL, InputInterface $input = NULL) {
     if (isset($this->$command)) {
       if ($input && $environment = $input->getOption('environment')) {
@@ -89,6 +114,9 @@ class Configuration extends ArrayObjectWrapper {
     return NULL;
   }
 
+  /**
+   * Get available commands.
+   */
   public function getCommands(array $options = []) {
     $directory = __DIR__;
     if (isset($options['directory'])) {
@@ -125,6 +153,11 @@ class Configuration extends ArrayObjectWrapper {
 
     if ($custom_commands = $this->getConfigOption('commands')) {
       $commands = array_merge($commands, $custom_commands);
+    }
+    if ($passalong_commands = $this->getConfigOption('passalong')) {
+      foreach ($passalong_commands as $command => $details) {
+        $commands[] = ['Project\Command\PassAlongCommand', $command];
+      }
     }
 
     return $commands;
