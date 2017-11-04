@@ -1,7 +1,8 @@
 {
     "require": {
       "symfony/console": "^3.2",
-      "symfony/yaml": "^3.2"
+      "symfony/yaml": "^3.2",
+        "php-coveralls/php-coveralls": "^1.0"
     },
     "autoload": {
       "psr-4": {"Project\\": "src/"}
