@@ -2,7 +2,7 @@
 
 A common interface for handling differences in projects.
 
-[![Build Status](https://travis-ci.org/robballou/project.svg?branch=master)](https://travis-ci.org/robballou/project)
+[![Build Status](https://travis-ci.org/robballou/project.svg?branch=master)](https://travis-ci.org/robballou/project) [![Coverage Status](https://coveralls.io/repos/github/robballou/project/badge.svg?branch=providers)](https://coveralls.io/github/robballou/project?branch=providers)
 
 Many projects will have different setups for:
 
