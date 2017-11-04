@@ -18,6 +18,8 @@ This aims to provide a set of common terms with the configurability needed to ad
 1. PHP 7 (probably runs in later PHP 5 too)
 1. [Composer](https://getcomposer.org/)
 
+**Note:** I hope to ship a docker image shortly so you could run it via docker without needing PHP 7 locally!
+
 ## Install
 
 1. Git clone this to your preferred location.
@@ -28,7 +30,29 @@ This aims to provide a set of common terms with the configurability needed to ad
 
 You can have a global configuration file at `~/.project/config.yml` and project specific configuration in `PATH/TO/PROJECT/.project/config.yml`. If you have multiple configurations in your path, the "closest" configurations take precedence. You can view your config sources by running `project config:sources`.
 
+Want to share some configuration in your repo, but want some personal touches? Or do you go your own way for your local environment? You can also provide a `config.local.yml` file for your specific nuances. Just put that file in your an appropriate place in your directory strucuture and make sure to ignore it for your version control.
+
 ## Terms/Commands
+
+Basic terms:
+
+* [build](#build)
+* [config](#config)
+* [connect](#connect)
+* [local](#local)
+* [script](#script)
+* [test](#test)
+* [url](#url)
+
+And some further terms:
+
+* [Drupal](#drupal) (supports Drupal specific functionality)
+* [Pass Along Commands](#pass_along_commands) (supports passing common commands to their environments)
+
+Future terms:
+
+* Database
+* Deploy
 
 ### build
 
@@ -142,3 +166,34 @@ URLs are saved in the config files:
 url:
   stage: http://example.com
 ```
+
+### drupal
+
+* [Example config](https://github.com/robballou/src/master/examples/drupal.yml)
+
+Currently this supports `drush` and `drupal` console commands.
+
+    # execute drush locally (per your local environment configuration)
+    project drush
+
+    # execute drush on staging
+    project -e staging drush
+
+**Note:** This may change to use pass along commands in future releases.
+
+### Pass along commands
+
+Many software development frameworks include their own tools. While some may warrant making contributed commands, many can be handled as "pass along" commands. These basically work by handling some basic connection needs familiar to `project`, but then sending all arguments to the command directly.
+
+For example, if you want to pass things to `rails` command on your local via docker-compose:
+
+    options:
+        passalong:
+            # `project rails` should connect to a docker container called "web" via docker-compose
+            rails:
+                style: docker-compose
+                container: web
+
+### Custom commands
+
+You can make your own commands. The project uses [Symfony Console component](https://symfony.com/doc/current/components/console.html) to build commands.

@@ -21,3 +21,9 @@ drush:
   environ:
     style: terminus
     alias: site.env
+
+drupal_console:
+
+  # default connection type using drupal console
+  default:
+    style: ssh

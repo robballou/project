@@ -20,6 +20,11 @@ class SourcesCommand extends ProjectCommand {
 
   protected function execute(InputInterface $input, OutputInterface $output) {
     $config_files = $this->getApplication()->config->getConfigFiles();
+
+    if (!$config_files) {
+      throw new \Exception('No configuration files found');
+    }
+
     foreach ($config_files as $config_file) {
       $output->writeln($config_file);
     }
