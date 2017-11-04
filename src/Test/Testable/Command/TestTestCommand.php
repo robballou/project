@@ -16,4 +16,5 @@ class TestTestCommand extends TestCommand {
     }
     return new NonExecutor($command, $output);
   }
+  
 }

@@ -42,7 +42,7 @@ class DockerProvider extends CommandProvider {
   /**
    * Handle connect commands.
    */
-  public function subcommandConnect(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command) {
+  protected function subcommandConnect(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command) {
     $this_command = $this->subcommandExec($input, $output, $details, $this_command);
     return $this_command . ' /bin/bash';
   }
@@ -50,7 +50,7 @@ class DockerProvider extends CommandProvider {
   /**
    * Handle general exec commands.
    */
-  public function subcommandExec(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command, $extra_args = []) {
+  protected function subcommandExec(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command, $extra_args = []) {
     $container = $details->container;
     if (!$container) {
       throw new \Exception('No container is set for this environment');
@@ -62,5 +62,20 @@ class DockerProvider extends CommandProvider {
     return $this_command . ' exec ' . escapeshellarg($container) . $extra_args;
   }
 
+  /**
+   * Handle run commands.
+   */
+  public function subcommandRun(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command) {
+    $this_command = $this->subcommandExec($input, $output, $details, $this_command);
+    return $this_command . ' run';
+  }
+  
+  /**
+   * Handle run commands.
+   */
+  public function subcommandStop(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command) {
+    $this_command = $this->subcommandExec($input, $output, $details, $this_command);
+    return $this_command . ' stop';
+  }
 
 }

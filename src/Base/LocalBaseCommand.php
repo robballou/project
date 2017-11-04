@@ -62,14 +62,15 @@ abstract class LocalBaseCommand extends ProjectCommand {
    */
   protected function executeList(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $thing, $list_key) {
     $config = $this->getApplication()->config;
-    $pre = $thing->get($list_key, []);
-    $pre = new ArrayObjectWrapper($pre);
-    foreach ($pre as $action) {
-      $this->outputVerbose($output, $list_key . ': ' . var_export($action->getArray(), TRUE));
+    $list = $thing->get($list_key, []);
+    $list = new ArrayObjectWrapper($list);
+    foreach ($list as $action) {
       $style = $action->get('style');
+      $this->outputVerbose($output, $list_key . ' (' . $style . '): ' . var_export($action->getArray(), TRUE));
       if (!$style && $action->get(['command', 'script'])) {
         $style = 'shell';
       }
+      
       $provider = $this->getCommandProvider($style);
       $command = $provider->get($input, $output, $action);
       $ex = $this->getExecutor($command, $output);

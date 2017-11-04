@@ -1,0 +1,6 @@
+local:
+  default:
+    style: docker-compose
+    container: web
+    post:
+      - command: date

@@ -47,7 +47,7 @@ abstract class CommandProvider {
   public function subcommand(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $subcommand, $this_command, array $extra_args = []) {
     $subcommand_function = $this->getSubcommandFunction($subcommand);
     if (!method_exists($this, $subcommand_function)) {
-      throw new \Exception('The docker-compose command provider does not have a subcommand: ' . $subcommand);
+      throw new \Exception('The ' . get_class($this) . ' command provider does not have a subcommand: ' . $subcommand);
     }
 
     // build an array of arguments of the 4 that we need and then any remaining

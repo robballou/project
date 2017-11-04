@@ -32,6 +32,20 @@ class VagrantProvider extends CommandProvider {
   }
 
   /**
+   * Handle run commands.
+   */
+  public function subcommandRun(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command) {
+    return $this_command . ' up';
+  }
+  
+  /**
+   * Handle stop commands.
+   */
+  public function subcommandStop(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command) {
+    return $this_command . ' halt';
+  }
+
+  /**
    * Handle general exec commands.
    */
   public function subcommandExec(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command, $further_command) {

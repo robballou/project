@@ -274,9 +274,9 @@ class Configuration extends ArrayObjectWrapper {
    * @return string
    */
   public function getProviderClass($style = NULL) {
-    $provider = 'Project\Provider\ShellProvider';
-
     $default_providers = [
+      'default' => 'Project\Provider\ShellProvider',
+      'shell' => 'Project\Provider\ShellProvider',
       'drush' => 'Project\Provider\Drupal\DrupalCommandProvider',
       'docker-compose' => 'Project\Provider\DockerComposeProvider',
       'ssh' => 'Project\Provider\SSHProvider',
@@ -287,21 +287,13 @@ class Configuration extends ArrayObjectWrapper {
       $style = 'default';
     }
 
-    if (isset($this->providers[$style])) {
-      return $this->providers[$style];
+    $configured_providers = $this->getConfigOption('options.providers', new ArrayObjectWrapper);
+    $providers = array_merge($default_providers, $configured_providers->getArray());
+    if (isset($providers[$style])) {
+      return $providers[$style];
     }
-    $provider_option = $this->getConfigOption('options.providers.' . $this->getStyleName($style));
-    if ($provider_option) {
-      $this->providers[$style] = $provider_option;
-      return $this->providers[$style];
-    }
-
-    if (isset($default_providers[$style])) {
-      $this->providers[$style] = $default_providers[$style];
-      return $this->providers[$style];
-    }
-
-    return $provider;
+    
+    return $providers['default'];
   }
 
   /**

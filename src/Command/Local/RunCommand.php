@@ -40,12 +40,18 @@ class RunCommand extends LocalBaseCommand {
 
       $this->pre($input, $output, $thing);
 
-      $runner_class = $this->getRunner($thing);
-      if (!$runner_class) {
-        throw new \Exception('No runner for this thing: ' . json_encode($thing));
-      }
-      $runner = new $runner_class($config, $thing, $input, $output);
-      $runner->run();
+      $style = $thing->get('style', NULL);
+      $provider = $this->getCommandProvider($style);
+      $this_command = $provider->get($input, $output, $thing, 'run');
+      $ex = $this->getExecutor($this_command, $output);
+      $ex->execute();
+
+      // $runner_class = $this->getRunner($thing);
+      // if (!$runner_class) {
+      //   throw new \Exception('No runner for this thing: ' . json_encode($thing));
+      // }
+      // $runner = new $runner_class($config, $thing, $input, $output);
+      // $runner->run();
       $this->outputVerbose($output, 'Started: ' . $key);
 
       $this->post($input, $output, $thing);

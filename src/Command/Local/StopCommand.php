@@ -20,7 +20,7 @@ class StopCommand extends LocalBaseCommand {
       // the short description shown while running "php bin/console list"
       ->setDescription('Stop the local environment')
 
-      ->addOption('all', 'a', InputOption::VALUE_NONE, 'Run all things')
+      ->addOption('all', 'a', InputOption::VALUE_NONE, 'Stop all things')
 
       ->addArgument('thing', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Optional thing(s) to stop')
     ;
@@ -30,13 +30,25 @@ class StopCommand extends LocalBaseCommand {
     $config = $this->getApplication()->config;
 
     $things = $this->resolveThings($input, $output);
+    if (!$things) {
+      throw new \Exception('Could not resolve the components for this command');
+    }
 
-    $this->outputVerbose($output, 'Running: ' . implode(', ', $things->getKeys()));
+    $this->outputVerbose($output, 'Stopping: ' . implode(', ', $things->getKeys()));
     foreach ($things as $key => $thing) {
-      $runner_class = $this->getRunner($thing);
-      $runner = new $runner_class($config, $thing, $input, $output);
-      $runner->stop();
+      $this->outputVerbose($output, 'Stopping: ' . json_encode($thing, JSON_PRETTY_PRINT));
+
+      $this->pre($input, $output, $thing);
+
+      $style = $thing->get('style', NULL);
+      $provider = $this->getCommandProvider($style);
+      $this_command = $provider->get($input, $output, $thing, 'run');
+      $ex = $this->getExecutor($this_command, $output);
+      $ex->execute();
+
       $this->outputVerbose($output, 'Stopped: ' . $key);
+
+      $this->post($input, $output, $thing);
     }
   }
 

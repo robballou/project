@@ -14,8 +14,6 @@ abstract class ProjectCommand extends Command {
   use \Project\Traits\PathTrait;
   use \Project\Traits\RunnerTrait;
 
-  protected $commandProvider = NULL;
-
   protected function getExecutor($command, OutputInterface $output = NULL) {
     if (!$output && $this->output) {
       $output = $this->output;
@@ -32,12 +30,7 @@ abstract class ProjectCommand extends Command {
     $config = $this->getApplication()->config;
 
     $provider = $config->getProviderClass($style);
-
-    if (!$this->commandProvider) {
-      $this->commandProvider = new $provider($config);
-    }
-
-    return $this->commandProvider;
+    return new $provider($config);
   }
 
   protected function getErrorOutput(OutputInterface $output) {

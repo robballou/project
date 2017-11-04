@@ -10,6 +10,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * List available local things to run.
+ */
 class ListCommand extends ProjectCommand {
   protected function configure() {
     $this
