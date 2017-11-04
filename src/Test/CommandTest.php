@@ -6,7 +6,9 @@ use PHPUnit\Framework\TestCase;
 use Project\Test\Testable\Command\TestCommand;
 
 /**
- * Test commands
+ * Test basic command functionality.
+ * 
+ * E.g. ProjectCommand...
  */
 class CommandTest extends TestCase {
 

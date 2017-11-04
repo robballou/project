@@ -120,7 +120,7 @@ class TestCommand extends ProjectCommand {
 
     foreach ($commands as $test_name => $this_command) {
       $output->writeln('Running test: ' . $test_name);
-      $ex = new Executor($this_command);
+      $ex = $this->getExecutor($this_command);
       if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
         $ex->outputCommand($output);
       }
