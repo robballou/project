@@ -13,7 +13,7 @@ before_script:
 
 script:
   - mkdir -p build/logs
-  - php ./vendor/bin/phpunit
+  - phpunit
 
 after_success:
   - travis_retry php ./vendor/bin/coveralls
