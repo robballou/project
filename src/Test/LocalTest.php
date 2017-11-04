@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\StreamOutput;
 
 use Project\Test\Testable\Command\Local\TestRunCommand;
+use Project\Test\Testable\Command\Local\TestStopCommand;
 
 class LocalTest extends ProjectTestCase {
   public function setUp() {
@@ -44,9 +45,9 @@ class LocalTest extends ProjectTestCase {
   /**
    * Test that settings from local.default get picked up
    */
-  public function testDefaultLocal() {
+  public function testDefaultLocalStop() {
     $this->application->config = new Configuration(__DIR__ . '/fixtures/configuration/local');
-    $this->application->add(new TestRunCommand());
+    $this->application->add(new TestStopCommand());
     $command = $this->application->find('local:stop');
 
     $input = new ArrayInput([]);

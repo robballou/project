@@ -42,7 +42,7 @@ class StopCommand extends LocalBaseCommand {
 
       $style = $thing->get('style', NULL);
       $provider = $this->getCommandProvider($style);
-      $this_command = $provider->get($input, $output, $thing, 'run');
+      $this_command = $provider->get($input, $output, $thing, 'stop');
       $ex = $this->getExecutor($this_command, $output);
       $ex->execute();
 
