@@ -8,8 +8,16 @@ use Project\Executor\Executor;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Base class for the local: commands.
+ */
 abstract class LocalBaseCommand extends ProjectCommand {
 
+  /**
+   * Apply some default values to the processed "thing".
+   * 
+   * TODO: this is nested loop should be refactored?
+   */
   protected function applyDefaultValues($default, &$processed_things) {
     if ($default) {
       foreach (array_keys($processed_things) as $key) {
@@ -22,6 +30,13 @@ abstract class LocalBaseCommand extends ProjectCommand {
     }
   }
 
+  /**
+   * Get the default "thing" (or things).
+   * 
+   * TODO: this sort of has dual principles when it should have one.
+   * 
+   * @param bool $all Return all components (returns the first one by default).
+   */
   protected function getDefaultThings($all = FALSE) {
     $config = $this->getApplication()->config;
 
@@ -40,6 +55,29 @@ abstract class LocalBaseCommand extends ProjectCommand {
   }
 
   /**
+   * Execute a list of commands.
+   *
+   * @see pre()
+   * @see post()
+   */
+  protected function executeList(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $thing, $list_key) {
+    $config = $this->getApplication()->config;
+    $pre = $thing->get($list_key, []);
+    $pre = new ArrayObjectWrapper($pre);
+    foreach ($pre as $action) {
+      $this->outputVerbose($output, $list_key . ': ' . var_export($action->getArray(), TRUE));
+      $style = $action->get('style');
+      if (!$style && $action->get(['command', 'script'])) {
+        $style = 'shell';
+      }
+      $provider = $this->getCommandProvider($style);
+      $command = $provider->get($input, $output, $action);
+      $ex = $this->getExecutor($command, $output);
+      $ex->execute();
+    }
+  }
+
+  /**
    * Execute pre commands.
    *
    * @param InputInterface $input
@@ -48,20 +86,7 @@ abstract class LocalBaseCommand extends ProjectCommand {
    * @return void
    */
   protected function pre(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $thing) {
-    $config = $this->getApplication()->config;
-    $pre = $thing->get('pre', []);
-    $pre = new ArrayObjectWrapper($pre);
-    foreach ($pre as $action) {
-      $this->outputVerbose($output, 'Pre: ' . var_export($action->getArray(), TRUE));
-      $style = $action->get('style');
-      if (!$style && $action->get(['command', 'script'])) {
-        $style = 'shell';
-      }
-      $provider = $this->getCommandProvider($style);
-      $pre_command = $provider->get($input, $output, $action);
-      $ex = $this->getExecutor($pre_command, $output);
-      $ex->execute();
-    }
+    $this->executeList($input, $output, $thing, 'pre');
   }
 
   /**
@@ -73,18 +98,7 @@ abstract class LocalBaseCommand extends ProjectCommand {
    * @return void
    */
   protected function post(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $thing) {
-    $post = $thing->get('post', []);
-    foreach ($post as $action) {
-      $this->outputVerbose($output, 'Post: ' . $action);
-      $style = $action->get('style');
-      if (!$style && $action->get(['command', 'script'])) {
-        $style = 'shell';
-      }
-      $provider = $config->getProvider($style);
-      $pre_command = $provider->get($input, $output, $action);
-      $ex = $this->getExecutor($pre_command, $output);
-      $ex->execute();
-    }
+    $this->executeList($input, $output, $thing, 'post');
   }
 
   /**

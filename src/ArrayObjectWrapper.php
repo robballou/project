@@ -69,6 +69,11 @@ class ArrayObjectWrapper implements \Iterator, \JsonSerializable {
   }
 
   public function getArray() {
+    foreach ($this->array as $key => $value) {
+      if ($value instanceof ArrayObjectWrapper) {
+        $this->array[$key] = $value->getArray();
+      }
+    }
     return $this->array;
   }
 

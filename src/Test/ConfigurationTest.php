@@ -3,11 +3,14 @@
 namespace Project\Test;
 
 use PHPUnit\Framework\TestCase;
-use Project\Configuration;
-use Project\Test\Testable\TestConfiguration;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
+
+use Project\Configuration;
+use Project\Test\Testable\TestConfiguration;
+
 
 class ConfigurationTest extends TestCase {
   public function testGetFilesFromChildDirectory() {
@@ -187,6 +190,92 @@ class ConfigurationTest extends TestCase {
     $config->setConfig(['test' => 123]);
 
     $this->assertEquals(123, $config->test);
+  }
+
+  public function testSetConfigYaml() {
+    $config = new Configuration();
+    $config->setConfigYaml("local:\n  default:\n    style: docker");
+    $this->assertEquals('docker', $config->getConfigOption('local.default.style'));
+  }
+
+  /**
+   * Test Configuration::getStyleName()
+   */
+  public function testGetStyleName() {
+    $config = new Configuration();
+    $tests = [
+      [
+        'style' => 'test',
+        'expect' => 'test',
+      ],
+      [
+        'style' => 'test-thing',
+        'expect' => 'test_thing',
+      ],
+    ];
+
+    foreach ($tests as $test) {
+      $this->assertEquals($test['expect'], $config->getStyleName($test['style']));
+    }
+  }
+
+  public function testGetProviderClassWithDefault() {
+    $config = new Configuration();
+    $this->assertEquals('Project\Provider\ShellProvider', $config->getProviderClass());
+  }
+  
+  public function testGetProviderClassWithConfiguredDefault() {
+    $config = new TestConfiguration(__DIR__ . '/fixtures/configuration/example');
+    $this->assertEquals('SomeProvider', $config->getProviderClass());
+  }
+
+  public function testGetCommands() {
+    $config = new TestConfiguration(__DIR__ . '/fixtures/configuration/example');
+    $commands = $config->getCommands();
+    $this->assertTrue(in_array('CustomCommand', $commands), 'CustomCommand does not exist');
+    $count = array_reduce($commands, function ($count, $command) {
+      if ($command == 'CustomCommand') {
+        return ++$count;
+      }
+      return $count;
+    }, 0);
+    $this->assertEquals(1, $count);
+  }
+
+  public function testGetEnvironment() {
+    $app = new Application();
+    $app->getDefinition()->addOption(
+      new InputOption(
+        'environment',
+        'e',
+        InputOption::VALUE_OPTIONAL,
+        'The environment to operate in.'
+      )
+    );
+
+    $config = new Configuration();
+
+    $tests = [
+      [
+        'input' => [],
+        'options' => [],
+        'expect' => 'default',
+      ],
+      [
+        'input' => [],
+        'options' => ['environment' => 'test'],
+        'expect' => 'test',
+      ],
+    ];
+
+    foreach ($tests as $test) {
+      $input = new ArrayInput($test['input']);
+      $input->bind($app->getDefinition());
+      foreach ($test['options'] as $option => $value) {
+        $input->setOption($option, $value);
+      }
+      $this->assertEquals($test['expect'], $config->getEnvironment($input));
+    }
   }
 
 }

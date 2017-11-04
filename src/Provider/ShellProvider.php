@@ -45,7 +45,7 @@ class ShellProvider extends CommandProvider {
       $this_command .= $details->script;
     }
 
-    return $this_command;
+    return $this->replacePathVariables($this_command, $this->config);
   }
 
 }

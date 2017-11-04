@@ -20,3 +20,9 @@ script:
   dir:
     script: dir.sh
     base: $PROJECT/scripts
+
+options:
+  providers:
+    default: SomeProvider
+  commands:
+    - CustomCommand

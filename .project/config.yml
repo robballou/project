@@ -1,3 +1,5 @@
 test:
   default:
     command: ./vendor/bin/phpunit
+  coverage:
+    command: ./vendor/bin/phpunit --coverage-text

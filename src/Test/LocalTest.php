@@ -8,7 +8,7 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
 
-use Project\Test\Testable\Local\TestRunCommand;
+use Project\Test\Testable\Command\Local\TestRunCommand;
 
 class LocalTest extends TestCase {
   public function setUp() {
@@ -136,6 +136,36 @@ class LocalTest extends TestCase {
       $actual_count = count($things->getKeys());
       $this->assertTrue($actual_count == $expected_count, "Test $i expected keys: " . $expected_count . "; Found: " . $actual_count);
     }
+  }
+
+  public function testPre() {
+    $this->application->config = new Configuration();
+    $this->application->config->setConfigYaml("local:\n  default:\n    style: docker-compose\n    pre:\n      - command: echo \$THING");
+    $this->application->add(new TestRunCommand());
+    $command = $this->application->find('local:run');
+    $input = new ArrayInput([]);
+    $output = new StreamOutput(fopen('php://memory', 'w', FALSE));
+
+    $command->run($input, $output);
+    rewind($output->getStream());
+    $display = stream_get_contents($output->getStream());
+    $lines = explode("\n", $display);
+    $this->assertEquals('echo $THING', $lines[0]);
+  }
+
+  public function testPost() {
+    $this->application->config = new Configuration();
+    $this->application->config->setConfigYaml("local:\n  default:\n    style: docker-compose\n    post:\n      - command: echo \$THING");
+    $this->application->add(new TestRunCommand());
+    $command = $this->application->find('local:run');
+    $input = new ArrayInput([]);
+    $output = new StreamOutput(fopen('php://memory', 'w', FALSE));
+
+    $command->run($input, $output);
+    rewind($output->getStream());
+    $display = stream_get_contents($output->getStream());
+    $lines = explode("\n", $display);
+    $this->assertEquals('echo $THING', $lines[1]);
   }
 
 }

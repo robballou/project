@@ -6,6 +6,9 @@ use Project\ArrayObjectWrapper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Project configuration handler.
+ */
 class Configuration extends ArrayObjectWrapper {
   use \Project\Traits\PathTrait;
 
@@ -14,6 +17,7 @@ class Configuration extends ArrayObjectWrapper {
   protected $startingDirectory = NULL;
 
   protected $providers = [];
+  protected $commands = [];
 
   /**
    * Constructor.
@@ -116,8 +120,19 @@ class Configuration extends ArrayObjectWrapper {
 
   /**
    * Get available commands.
+   * 
+   * Available options:
+   * 
+   * - directory: used to specify the starting directory.
+   * - current: the current directory to search.
+   * 
+   * @param array $options
    */
   public function getCommands(array $options = []) {
+    if (isset($options['reset'])) {
+      $this->commands = [];
+    }
+
     $directory = __DIR__;
     if (isset($options['directory'])) {
       $directory = $options['directory'];
@@ -127,40 +142,45 @@ class Configuration extends ArrayObjectWrapper {
       return $this->getCommands(['current' => $directory . '/Command']);
     }
 
+    // return statically cached commands if they exist
+    if (isset($options['current']) && isset($this->commands[$options['current']])) {
+      return $this->commands[$options['current']];
+    }
+
     $commands = [];
-    $d = dir($options['current']);
-    $source_path = array_reverse(explode('/', $options['current']));
+    $current = $options['current'];
+
+    // get the files from the directory
+    $entries = $this->scanDir($current);
+
+    $source_path = array_reverse(explode('/', $current));
     while ($source_path[0] != 'Command') {
       array_shift($source_path);
     }
     $source_path = implode('/', array_reverse($source_path));
 
-    while (FALSE !== ($entry = $d->read())) {
-      if (substr($entry, 0, 1) == '.') {
-        continue;
-      }
-      $entry_path = $options['current'] . '/' . $entry;
-      if (is_file($entry_path) && preg_match('/Command.php$/', $entry)) {
-        $class = str_replace('.php', '', basename($entry_path));
-        $path = str_replace([$source_path, '/'], ['', '\\'], dirname($entry_path));
-        $namespace = 'Project\Command' . $path . '\\' . $class;
-        $commands[] = $namespace;
-      }
-      elseif (is_dir($entry_path)) {
-        $commands = array_merge($commands, $this->getCommands(['current' => $entry_path]));
-      }
+    foreach ($entries as $entry) {
+      $class = str_replace('.php', '', basename($entry));
+      $path = str_replace([$source_path, '/'], ['', '\\'], dirname($entry));
+      $namespace = 'Project\Command' . $path . '\\' . $class;
+      $commands[] = $namespace;
     }
-
-    if ($custom_commands = $this->getConfigOption('commands')) {
+    
+    // find custom commands
+    if ($custom_commands = $this->getConfigOption('options.commands')) {
       $commands = array_merge($commands, $custom_commands);
     }
-    if ($passalong_commands = $this->getConfigOption('passalong')) {
+
+    // find custom passalong commands
+    if ($passalong_commands = $this->getConfigOption('options.passalong')) {
       foreach ($passalong_commands as $command => $details) {
         $commands[] = ['Project\Command\PassAlongCommand', $command];
       }
     }
 
-    return $commands;
+    $commands = array_unique($commands, SORT_REGULAR);
+    $this->commands[$current] = $commands;
+    return $this->commands[$current];
   }
 
   /**
@@ -190,6 +210,13 @@ class Configuration extends ArrayObjectWrapper {
     return $this->array;
   }
 
+  /**
+   * Get a configuration option based on a path.
+   *
+   * @param mixed $option An array for that path or a string specifying the path to a configuration option.
+   * @param mixed $default The default value if not found.
+   * @return mixed
+   */
   public function getConfigOption($option, $default = NULL) {
     if (!is_array($option)) {
       $option = [$option];
@@ -215,10 +242,21 @@ class Configuration extends ArrayObjectWrapper {
     return $default;
   }
 
+  /**
+   * Get style name.
+   *
+   * @param string $style
+   * @return string
+   */
   public function getStyleName($style) {
     return str_replace('-', '_', $style);
   }
 
+  /**
+   * Get the project path.
+   *
+   * @return string
+   */
   public function getProjectPath() {
     $base = $this->getConfigOption('base');
     if (!$base) {
@@ -229,6 +267,12 @@ class Configuration extends ArrayObjectWrapper {
     return $base;
   }
 
+  /**
+   * Get the provider class for a given style.
+   *
+   * @param string $style
+   * @return string
+   */
   public function getProviderClass($style = NULL) {
     $provider = 'Project\Provider\ShellProvider';
 
@@ -239,23 +283,48 @@ class Configuration extends ArrayObjectWrapper {
       'vagrant' => 'Project\Provider\VagrantProvider',
     ];
 
-    if ($style) {
-      if (isset($this->providers[$style])) {
-        return $this->providers[$style];
-      }
-      $provider_option = $this->getConfigOption('options.providers.' . $this->getStyleName($style));
-      if ($provider_option) {
-        $this->providers[$style] = $provider_option;
-        return $this->providers[$style];
-      }
+    if (!$style) {
+      $style = 'default';
+    }
 
-      if (isset($default_providers[$style])) {
-        $this->providers[$style] = $default_providers[$style];
-        return $this->providers[$style];
-      }
+    if (isset($this->providers[$style])) {
+      return $this->providers[$style];
+    }
+    $provider_option = $this->getConfigOption('options.providers.' . $this->getStyleName($style));
+    if ($provider_option) {
+      $this->providers[$style] = $provider_option;
+      return $this->providers[$style];
+    }
+
+    if (isset($default_providers[$style])) {
+      $this->providers[$style] = $default_providers[$style];
+      return $this->providers[$style];
     }
 
     return $provider;
+  }
+
+  /**
+   * Recursively get all files in the directory.
+   */
+  public function scanDir($dir) {
+    $entries = [];
+    $ignore = ['node_modules', 'vendor'];
+    foreach (scandir($dir) as $entry) {
+      if ($entry[0] == '.' || in_array($entry, $ignore)) {
+        continue;
+      }
+
+      $entry_path = $dir . DIRECTORY_SEPARATOR . $entry;
+      if (is_dir($entry_path)) {
+        $entries = array_merge($entries, $this->scanDir($entry_path));
+        continue;
+      }
+
+      $entries[] = $entry_path;
+    }
+
+    return $entries;
   }
 
   /**
@@ -263,6 +332,16 @@ class Configuration extends ArrayObjectWrapper {
    */
   public function setConfig(array $config) {
     $this->array = $config;
+  }
+
+  /**
+   * Set configuration array with some Yaml
+   *
+   * @param string $yaml
+   * @return void
+   */
+  public function setConfigYaml($yaml) {
+    return $this->setConfig(Yaml::parse($yaml));
   }
 
 }
