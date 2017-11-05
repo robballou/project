@@ -10,6 +10,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * List available deployments.
+ * 
+ * @codeCoverageIgnore
+ */
 class ListCommand extends ProjectCommand {
   protected function configure() {
     $this

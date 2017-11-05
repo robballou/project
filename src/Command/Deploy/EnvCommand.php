@@ -9,6 +9,8 @@ use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Deploy an environment.
+ * 
+ * @codeCoverageIgnore
  */
 class EnvCommand extends ProjectCommand {
 

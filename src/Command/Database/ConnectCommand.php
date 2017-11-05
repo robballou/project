@@ -9,6 +9,13 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Project\Executor\Executor;
 
+/**
+ * Connect to the database.
+ * 
+ * Currently not setup.
+ * 
+ * @codeCoverageIgnore
+ */
 class ConnectCommand extends ProjectCommand {
   protected function configure() {
     $this

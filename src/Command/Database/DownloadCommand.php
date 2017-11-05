@@ -11,6 +11,8 @@ use Project\Executor\Executor;
 
 /**
  * Download the database.
+ * 
+ * @codeCoverageIgnore
  */
 class DownloadCommand extends ProjectCommand {
 
