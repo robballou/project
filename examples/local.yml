@@ -11,6 +11,10 @@ local:
     # this will inherit local.default.style
     default:
       base: $PROJECT/vagrant
+      # you can setup things to run before local:start and local:stop. Also
+      # you can use "post" to run things after local:start and local:stop.
+      pre:
+        - command: rm $PROJECT/build/logs/*.log
 
     # this will override local.default.style for a "script". Scripts
     # should be executeable.
@@ -20,9 +24,10 @@ local:
       script: $PROJECT/server.js
 
       # NOTE: "script" and "command" runners are considered "start only"
-      # meaning that they will not run unless you set "stoppable". You can
-      # also set a stop_script or a stop_command option for specific
-      # scripts or commands to run instead.
+      # meaning that they only support "local:start" and not "local:stop". 
+      # If you want a script or command to work with "local:stop" you can 
+      # turn on the stoppable flag. You can also set a stop_script or a 
+      # stop_command option for specific scripts or commands to run instead.
       #
       # stoppable: true
       # stop_script: $PROJECT/stop_server.js

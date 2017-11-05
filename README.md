@@ -123,8 +123,9 @@ Planned support:
 
 - vagrant
 - docker-compose
-- drocker
-- ???
+- docker
+
+Local configuration also supports pre/post hooks for running specific commands before or after `local:start` and `local:stop`.
 
 ### script
 
