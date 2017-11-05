@@ -84,49 +84,36 @@ class BuildCommand extends ProjectCommand {
         throw new \Exception('No build style found: ' . json_encode($thing));
       }
 
-      $command = [];
-      if ($style == 'script' || $style == 'command') {
-        if (isset($thing->base)) {
-          $command[] = 'cd ' . $this->validatePath($thing->base, $config);
-        }
-
-        if ($style == 'script') {
-          $command[] = $this->replacePathVariables($thing->script, $config);
-        }
-        else {
-          $command[] = $this->replacePathVariables($thing->command, $config);
-        }
+      $provider = $this->getCommandProvider($style);
+      $command = $provider->get($input, $output, $thing);
+      $ex = $this->getExecutor($command, $output);
+      if ($this->isVerbose($output)) {
+        $ex->outputCommand($output);
       }
+      $ex->execute();
 
-      if ($command) {
-        $ex = new Executor(implode(' && ', $command));
-        if ($this->isVerbose($output)) {
-          $ex->outputCommand($output);
-        }
-        $ex->execute();
-      }
+      // $command = [];
+      // if ($style == 'script' || $style == 'command') {
+      //   if (isset($thing->base)) {
+      //     $command[] = 'cd ' . $this->validatePath($thing->base, $config);
+      //   }
+
+      //   if ($style == 'script') {
+      //     $command[] = $this->replacePathVariables($thing->script, $config);
+      //   }
+      //   else {
+      //     $command[] = $this->replacePathVariables($thing->command, $config);
+      //   }
+      // }
+
+      // if ($command) {
+      //   $ex = new Executor(implode(' && ', $command));
+      //   if ($this->isVerbose($output)) {
+      //     $ex->outputCommand($output);
+      //   }
+      //   $ex->execute();
+      // }
     }
-  }
-
-  protected function getRunner($thing) {
-    $style = $thing->style;
-
-    if (isset($thing->runner)) {
-      return $thing->runner;
-    }
-
-    $map = [
-      'vagrant' => 'Project\Runner\VagrantRunner',
-      'docker-compose' => 'Project\Runner\DockerComposeRunner',
-      'docker' => 'Project\Runner\DockerRunner',
-      'script' => 'Project\Runner\ScriptRunner',
-      'command' => 'Project\Runner\CommandRunner',
-    ];
-    if (in_array($style, array_keys($map))) {
-      return $map[$style];
-    }
-
-    return NULL;
   }
 
 }
