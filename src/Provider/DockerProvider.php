@@ -20,10 +20,6 @@ class DockerProvider extends CommandProvider {
     $environment = $this->config->getEnvironment($input);
 
     $file = $details->get('file');
-    $container = $details->container;
-    if (!$container) {
-      throw new \Exception('No container is set for this environment');
-    }
     $this_command = $this->command($details);
     if ($file) {
       $this_command .= ' -f ' . $file;
@@ -59,7 +55,8 @@ class DockerProvider extends CommandProvider {
     if ($extra_args) {
       $extra_args = ' ' . $extra_args;
     }
-    return $this_command . ' exec ' . escapeshellarg($container) . $extra_args;
+    $command = ' ' . $details->get('script', '');
+    return $this_command . ' exec ' . escapeshellarg($container) . $command . $extra_args;
   }
 
   /**

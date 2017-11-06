@@ -24,11 +24,30 @@ class DockerComposeProvider extends DockerProvider {
   }
 
   /**
+   * Handle general exec commands.
+   */
+  protected function subcommandExec(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command, $extra_args = []) {
+    $container = $details->container;
+    if (!$container) {
+      throw new \Exception('No container is set for this environment. Expected a container to be specified in: ' . json_encode($details, JSON_PRETTY_PRINT));
+    }
+    $extra_args = implode(' ', $extra_args);
+    if ($extra_args) {
+      $extra_args = ' ' . $extra_args;
+    }
+    $command = $details->get('script');
+    if ($command) {
+      $command = ' /bin/bash -c "' . $command . '"';
+    }
+    return $this_command . ' exec ' . escapeshellarg($container) . $command . $extra_args;
+  }
+
+  /**
    * Handle run commands.
    */
   public function subcommandRun(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command) {
-    $this_command = $this->subcommandExec($input, $output, $details, $this_command);
-    return $this_command . ' up';
+    // $this_command = $this->subcommandExec($input, $output, $details, $this_command);
+    return $this->command($details) . ' up';
   }
   
   /**
@@ -36,6 +55,6 @@ class DockerComposeProvider extends DockerProvider {
    */
   public function subcommandStop(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command) {
     $this_command = $this->subcommandExec($input, $output, $details, $this_command);
-    return $this_command . ' down';
+    return $this->command($details) . ' down';
   }
 }

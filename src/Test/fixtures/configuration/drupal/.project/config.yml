@@ -1,0 +1,16 @@
+drush:
+  default:
+    style: alias
+    alias: example.dev
+  
+  terminus:
+    style: terminus
+    alias: example.dev
+  
+  dc:
+    style: docker-compose
+    container: web
+  dc2:
+    style: docker-compose
+    container: web
+    web_root: /var/app
