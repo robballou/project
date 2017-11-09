@@ -2,7 +2,7 @@
 
 namespace Project\Command\Build;
 
-use Project\Base\ProjectCommand;
+use Project\Base\BuildBaseCommand;
 use Project\ArrayObjectWrapper;
 use Project\Executor\Executor;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class BuildCommand extends ProjectCommand {
+class BuildCommand extends BuildBaseCommand {
   protected function configure() {
     $this
       // the name of the command (the part after "bin/console")
@@ -31,7 +31,8 @@ class BuildCommand extends ProjectCommand {
     $config = $this->getApplication()->config;
     $things = $input->getArgument('thing');
 
-    if (!$config->getConfigOption('build')) {
+    $additional_options = $this->getAdditionalBuildOptions();
+    if (!$config->getConfigOption('build') && empty($additional_options)) {
       throw new \Exception('This project is not configured with any build options');
     }
 
@@ -59,6 +60,9 @@ class BuildCommand extends ProjectCommand {
       $new_things = [];
       foreach ($things as $thing) {
         $new_things[$thing] = $config->getConfigOption('build.' . $thing);
+        if (!$new_things[$thing] && isset($additional_options->$thing)) {
+          $new_things[$thing] = $additional_options->$thing;
+        }
       }
       $things = new ArrayObjectWrapper($new_things);
     }

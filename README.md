@@ -89,6 +89,20 @@ Then you can run: `project build dev`
 
 Connect to the environment via a shell (e.g., via SSH or docker).
 
+### deploy
+
+* [Example config](https://github.com/robballou/src/master/examples/deploy.yml)
+
+Manage deployments across projects. Can use scripts, commands, ansible, whatever you need:
+
+    # list available deployments
+    project deploy:list
+
+    # deploy the "staging" environment
+    project deploy staging
+
+Unlike most commands, the `deploy` command does not really have an idea of "default", so you need to specify an environment to deploy.
+
 ### local
 
 * [Example config](https://github.com/robballou/src/master/examples/local.yml)

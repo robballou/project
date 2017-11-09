@@ -3,3 +3,10 @@ build:
     style: command
     command: gulp dev
     base: ~/git/example
+
+options:
+  build:
+    # this will allow you to use any scripts found in your package.json as build
+    # options (without needing to redundantly add them). All scripts will run like:
+    #    npm run SCRIPT
+    package_json_scripts: $PROJECT/package.json

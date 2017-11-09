@@ -18,7 +18,7 @@ class EnvCommand extends ProjectCommand {
   protected function configure() {
     $this
       // the name of the command (the part after "bin/console")
-      ->setName('deploy:env')
+      ->setName('deploy')
       // the short description shown while running "php bin/console list"
       ->setDescription('Deploy changes to an environment')
 

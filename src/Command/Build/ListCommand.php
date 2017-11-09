@@ -2,7 +2,7 @@
 
 namespace Project\Command\Build;
 
-use Project\Base\ProjectCommand;
+use Project\Base\BuildBaseCommand;
 use Project\ArrayObjectWrapper;
 use Project\Executor\Executor;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class ListCommand extends ProjectCommand {
+class ListCommand extends BuildBaseCommand {
   protected function configure() {
     $this
       // the name of the command (the part after "bin/console")
@@ -26,11 +26,26 @@ class ListCommand extends ProjectCommand {
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
     $config = $this->getApplication()->config;
-    $items = $config->getConfigOption('build');
-    if ($items) {
+    $options = [];
+    if ($items = $config->getConfigOption('build')) {
       foreach ($items->getKeys() as $key) {
-        $output->writeln($key);
+        $options[] = $key;
       }
+    }
+
+    $additional_build_options = $this->getAdditionalBuildOptions();
+    if ($additional_build_options) {
+      foreach ($additional_build_options->getKeys() as $key) {
+        if (!in_array($key, $options)) {
+          $options[] = $key;
+        }
+      }
+    }
+
+    sort($options);
+
+    foreach ($options as $key) {
+      $output->writeln($key);
     }
   }
 

@@ -1,0 +1,6 @@
+deploy:
+  staging:
+    # executes ansible-playbook -i staging site.yml
+    style: ansible
+    file: site.yml
+    inventory: staging
