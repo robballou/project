@@ -67,7 +67,15 @@ build:
     command: gulp dev
 ```
 
-Then you can run: `project build dev`
+Then you can run: `project build dev`. If you use `scripts` in a `package.json` file, you can also load those automatically:
+
+```yaml
+options:
+  build:
+    package_json_scripts: $PROJECT/package.json
+```
+
+For example, if you have a `watch` command in your `package.json`, you can now run `project build watch`.
 
 ### config
 
