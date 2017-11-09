@@ -199,4 +199,20 @@ class LocalTest extends ProjectTestCase {
     $this->assertEquals('date', $lines[1]);
   }
 
+  public function testDockerComposeWithFile() {
+    $this->application->config = new Configuration();
+    $this->application->config->setConfigYaml($this->getStub('docker_compose_file'));
+    $this->application->add(new TestRunCommand());
+    
+    $command = $this->application->find('local:run');
+
+    $input = new ArrayInput([]);
+    $output = new StreamOutput(fopen('php://memory', 'w', FALSE));
+
+    $command->run($input, $output);
+    rewind($output->getStream());
+    $display = stream_get_contents($output->getStream());
+    $this->assertTrue(strpos($display, 'docker-compose.dev.yml') !== FALSE);
+  }
+
 }

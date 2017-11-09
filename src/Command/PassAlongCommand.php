@@ -23,15 +23,17 @@ class PassAlongCommand extends ProjectCommand {
     $environment = $config->getEnvironment($input);
 
     $command_name = $this->getName();
-    $style = $config->get(['passalong.' . $command_name . '.style'], 'shell');
-    $details = $config->get(['passalong.' . $command_name]);
+    $style = $config->get(['options.passalong.' . $command_name . '.style'], 'shell');
+    $details = $config->get(['options.passalong.' . $command_name]);
+
+    $this->outputVerbose($output, 'Running ' . $command_name . ' via ' . $style);
     
     $command = explode(' ', (string) $input);
     $command = implode(' ', array_slice($command, array_search($command_name, $command)));
 
     $provider = $this->getCommandProvider($style);
     $this_command = $provider->get($input, $output, $details, 'exec', $command);
-
+    
     $ex = $this->getExecutor($this_command, $output);
     $ex->execute();
   }

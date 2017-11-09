@@ -67,53 +67,6 @@ class TestCommand extends ProjectCommand {
       $commands[$test] = $provider->get($input, $output, $details);
     }
 
-    // switch ($style) {
-    //   case 'local':
-    //     foreach ($tests as $test => $details) {
-    //       $test_command = '';
-    //       if (isset($details->base) && $path = $this->validatePath($details->base, $config)) {
-    //         $test_command = 'cd ' . escapeshellarg($path) . ' && ';
-    //       }
-    //       $test_command .= $details->command;
-    //       $this_command = $test_command;
-    //       $commands[$test] = $this_command;
-    //     }
-    //     break;
-    //
-    //   // Run tests on docker
-    //   case 'docker-compose':
-    //     foreach ($tests as $test => $details) {
-    //       $test_command = '';
-    //       if (isset($details->base) && $path = $this->validatePath($details->base, $config)) {
-    //         $test_command = 'cd ' . escapeshellarg($path) . ' && ';
-    //       }
-    //       $test_command .= $details->command;
-    //       $this_command = 'docker-compose exec drupal /bin/bash -c "' . $test_command . '"';
-    //       $commands[$test] = $this_command;
-    //     }
-    //     break;
-    //
-    //   // Run tests on vagrant...
-    //   case 'vagrant':
-    //     $vagrant_directory = $config->getConfigOption([
-    //       'connect.' . $environment . '.vagrant_directory',
-    //       'connect.vagrant_directory',
-    //       'local.' . $environment . '.vagrant_directory',
-    //       'local.vagrant_directory',
-    //     ]);
-    //
-    //     foreach ($tests as $test => $details) {
-    //       $test_command = '';
-    //       if (isset($details->base) && $path = $this->validatePath($details->base, $config)) {
-    //         $test_command = 'cd ' . escapeshellarg($path) . ' && ';
-    //       }
-    //       $test_command .= $details->command;
-    //       $this_command = 'cd ' . $vagrant_directory . ' && vagrant ssh "' . $test_command . '"';
-    //       $commands[$test] = $this_command;
-    //     }
-    //     break;
-    // }
-
     if (empty($commands)) {
       throw new \Exception('No tests to run');
     }

@@ -276,9 +276,11 @@ class Configuration extends ArrayObjectWrapper {
   public function getProviderClass($style = NULL) {
     $default_providers = [
       'default' => 'Project\Provider\ShellProvider',
-      'shell' => 'Project\Provider\ShellProvider',
+      'ansible' => 'Project\Provider\AnsibleProvider',
       'drush' => 'Project\Provider\Drupal\DrupalCommandProvider',
       'docker-compose' => 'Project\Provider\DockerComposeProvider',
+      'docker' => 'Project\Provider\DockerProvider',
+      'shell' => 'Project\Provider\ShellProvider',
       'ssh' => 'Project\Provider\SSHProvider',
       'vagrant' => 'Project\Provider\VagrantProvider',
     ];

@@ -31,3 +31,10 @@ local:
       #
       # stoppable: true
       # stop_script: $PROJECT/stop_server.js
+    
+    docker_compose:
+      style: docker-compose
+      # will cause docker-compose to run with the -f flag
+      file: docker-compose.dev.yml
+      # turn off "detached" mode
+      detached: false

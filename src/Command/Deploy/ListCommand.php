@@ -12,8 +12,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 /**
  * List available deployments.
- * 
- * @codeCoverageIgnore
  */
 class ListCommand extends ProjectCommand {
   protected function configure() {

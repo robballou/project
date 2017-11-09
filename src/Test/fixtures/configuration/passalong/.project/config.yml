@@ -1,11 +1,12 @@
-passalong:
-  myexample:
-    # project myexample => docker-compose exec web myexample
-    style: docker-compose
-    container: web
-  myexample2:
-    # project myexample2 => docker exec -it web /bin/bash -c "cd /var/app && ./bin/myexample"
-    style: docker-compose
-    container: web
-    base: /var/app
-    command: ./bin/myexample
+options:
+  passalong:
+    myexample:
+      # project myexample => docker-compose exec web myexample
+      style: docker-compose
+      container: web
+    myexample2:
+      # project myexample2 => docker exec -it web /bin/bash -c "cd /var/app && ./bin/myexample"
+      style: docker-compose
+      container: web
+      base: /var/app
+      command: ./bin/myexample

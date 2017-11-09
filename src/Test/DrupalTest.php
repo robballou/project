@@ -15,23 +15,13 @@ use Symfony\Component\Console\Output\StreamOutput;
 
 class DrupalTest extends ProjectTestCase {
   public function setUp() {
-    $this->application = new Application();
+    parent::setUp();
     $this->application->config = new TestSingleDirectoryConfiguration(__DIR__ . '/fixtures/configuration/drupal');
     $this->application->add(new TestDrupalConsoleCommand());
     $this->application->add(new TestDrushCommand());
 
-    $this->application->getDefinition()->addOption(
-      new InputOption(
-        'environment',
-        'e',
-        InputOption::VALUE_OPTIONAL,
-        'The environment to operate in.'
-      )
-    );
-
     $this->drupal = $this->application->find('drupal');
     $this->drush = $this->application->find('drush');
-    // $this->commandTester = new CommandTester($this->command);
   }
 
   protected function getInput(array $args) {

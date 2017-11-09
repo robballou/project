@@ -9,8 +9,6 @@ use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Deploy an environment.
- * 
- * @codeCoverageIgnore
  */
 class EnvCommand extends ProjectCommand {
 
@@ -28,6 +26,9 @@ class EnvCommand extends ProjectCommand {
     ;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   protected function execute(InputInterface $input, OutputInterface $output) {
     $config = $this->getApplication()->config;
     $environment = $input->getArgument('environment');
@@ -37,9 +38,11 @@ class EnvCommand extends ProjectCommand {
       throw new \Exception('Could not find deployment: ' . $environment);
     }
 
-    $class = $this->getRunner($deployment);
-    $runner = new $class($config, $deployment, $input, $output);
-    $runner->run();
+    $style = $deployment->style;
+    $provider = $this->getCommandProvider($style);
+    $command = $provider->get($input, $output, $deployment);
+    $ex = $this->getExecutor($command, $output);
+    $ex->execute();
   }
 
 }

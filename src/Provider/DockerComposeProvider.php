@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Provider for shell interface.
+ * Provider for docker-compose
  */
 class DockerComposeProvider extends DockerProvider {
   static public $styles = ['docker', 'docker-compose',];
@@ -46,15 +46,18 @@ class DockerComposeProvider extends DockerProvider {
    * Handle run commands.
    */
   public function subcommandRun(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command) {
-    // $this_command = $this->subcommandExec($input, $output, $details, $this_command);
-    return $this->command($details) . ' up';
+    $command = $this_command . ' up';
+    $detached = $details->get(['daemon', 'detached'], true);
+    if ($detached) {
+      $command .= ' -d';
+    }
+    return $command;
   }
   
   /**
    * Handle run commands.
    */
   public function subcommandStop(InputInterface $input, OutputInterface $output, ArrayObjectWrapper $details, $this_command) {
-    $this_command = $this->subcommandExec($input, $output, $details, $this_command);
-    return $this->command($details) . ' down';
+    return $this_command . ' down';
   }
 }

@@ -13,21 +13,11 @@ use Symfony\Component\Console\Output\StreamOutput;
 
 class BuildTest extends ProjectTestCase {
   public function setUp() {
-    $this->application = new Application();
+    parent::setUp();
+    
     $this->application->config = new TestSingleDirectoryConfiguration(__DIR__ . '/fixtures/configuration/example');
     $this->application->add(new TestBuildCommand());
-
-    $this->application->getDefinition()->addOption(
-      new InputOption(
-        'environment',
-        'e',
-        InputOption::VALUE_OPTIONAL,
-        'The environment to operate in.'
-      )
-    );
-
     $this->command = $this->application->find('build');
-    // $this->commandTester = new CommandTester($this->command);
   }
 
   public function testNoBuilds() {
