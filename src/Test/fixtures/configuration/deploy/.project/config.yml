@@ -1,0 +1,7 @@
+deploy:
+  script:
+    script: deploy.sh
+  ansible:
+    style: ansible
+    file: site.yml
+    inventory: hosts
