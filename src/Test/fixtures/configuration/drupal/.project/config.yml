@@ -1,6 +1,6 @@
 drush:
   default:
-    style: alias
+    style:  alias
     alias: example.dev
   
   terminus:
@@ -10,7 +10,14 @@ drush:
   dc:
     style: docker-compose
     container: web
+
   dc2:
     style: docker-compose
     container: web
     web_root: /var/app
+
+  with_options:
+    style: alias
+    alias: example.dev
+    options:
+      uri: http://example.com

@@ -79,8 +79,15 @@ class DrupalTest extends ProjectTestCase {
   }
 
   public function testDrushWithOptions() {
-    $this->markTestIncomplete(
-      'This test has not been implemented yet.'
+    $command_tester = new CommandTester($this->drush);
+    $command_tester->execute(
+      [
+        'command' => 'drush',
+        'args' => ['uli'],
+        '--environment' => 'with_options',
+      ]
     );
+    $output = trim($command_tester->getDisplay());
+    $this->assertEquals("./drush @example.dev --uri=http://example.com  uli", $output);
   }
 }

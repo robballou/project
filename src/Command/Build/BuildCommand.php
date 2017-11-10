@@ -52,8 +52,7 @@ class BuildCommand extends BuildBaseCommand {
     }
 
     if (!$things) {
-      $output->writeln('No things to run');
-      return;
+      throw new \Exception('No things to run');
     }
 
     if (is_array($things)) {
