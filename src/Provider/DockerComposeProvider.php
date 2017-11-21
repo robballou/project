@@ -31,14 +31,23 @@ class DockerComposeProvider extends DockerProvider {
     if (!$container) {
       throw new \Exception('No container is set for this environment. Expected a container to be specified in: ' . json_encode($details, JSON_PRETTY_PRINT));
     }
+    
+    $command = $details->get(['script', 'command']);
+    $base = $details->get('base');
+    if ($command) {
+      if ($base) {
+        $command = 'cd ' . escapeshellarg($base) . ' && ' . $command;
+      }
+      $command = ' /bin/bash -c "' . $command . '"';
+
+      array_shift($extra_args);
+    }
+
     $extra_args = implode(' ', $extra_args);
     if ($extra_args) {
       $extra_args = ' ' . $extra_args;
     }
-    $command = $details->get('script');
-    if ($command) {
-      $command = ' /bin/bash -c "' . $command . '"';
-    }
+
     return $this_command . ' exec ' . escapeshellarg($container) . $command . $extra_args;
   }
 

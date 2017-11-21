@@ -53,7 +53,6 @@ abstract class CommandProvider {
     // build an array of arguments of the 4 that we need and then any remaining
     // args passed to this function.
     $args = [$input, $output, $details, $this_command, $extra_args];
-    
     return call_user_func_array([$this, $subcommand_function], $args);
   }
 

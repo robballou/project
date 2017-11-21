@@ -24,7 +24,6 @@ class DockerProvider extends CommandProvider {
     if ($file) {
       $this_command .= ' -f ' . $file;
     }
-
     return $this->subcommand($input, $output, $details, $subcommand, $this_command, $args);
   }
 
@@ -55,7 +54,7 @@ class DockerProvider extends CommandProvider {
     if ($extra_args) {
       $extra_args = ' ' . $extra_args;
     }
-    $command = ' ' . $details->get('script', '');
+    $command = ' ' . $details->get(['script', 'command'], '');
     return $this_command . ' exec ' . escapeshellarg($container) . $command . $extra_args;
   }
 

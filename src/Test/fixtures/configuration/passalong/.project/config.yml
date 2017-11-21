@@ -10,3 +10,8 @@ options:
       container: web
       base: /var/app
       command: ./bin/myexample
+    myexample3:
+      # project myexample3 => docker exec -it web /bin/bash -c "python myexample"
+      style: docker-compose
+      container: web
+      command: python myexample
