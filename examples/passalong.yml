@@ -1,0 +1,23 @@
+# passalong commands allow you to take advantage of the built-in providers (e.g. docker, etc)
+# but still use commands that your framework may need (all without building PHP commands!)
+
+options:
+  passalong:
+
+    # working on a rails project?
+    rails:
+      style: docker-compose
+      container: web
+    bundle:
+      style: docker-compose
+      container: web
+    
+    # django?
+    django-admin:
+      style: docker-compose
+      container: web
+      command: django-admin.py
+    manage:
+      style: docker-compose
+      container: web
+      command: python manage.py
