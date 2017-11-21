@@ -57,4 +57,18 @@ class PassAlongTest extends ProjectTestCase {
     $output = trim($commandTester->getDisplay());
     $this->assertEquals("docker-compose exec 'web' /bin/bash -c \"python myexample\"", $output);
   }
+  
+  public function testPassAlongWithCommandAndArgsWithoutBase() {
+    $this->application->add(new TestPassAlongCommand('myexample3'));
+    $command = $this->application->find('myexample3');
+    $commandTester = new CommandTester($command);
+    $commandTester->execute(array(
+      'command'  => 'myexample3',
+      'thing',
+    ));
+
+    // the output of the command in the console
+    $output = trim($commandTester->getDisplay());
+    $this->assertEquals("docker-compose exec 'web' /bin/bash -c \"python myexample thing\"", $output);
+  }
 }

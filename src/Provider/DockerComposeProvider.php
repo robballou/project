@@ -31,6 +31,11 @@ class DockerComposeProvider extends DockerProvider {
     if (!$container) {
       throw new \Exception('No container is set for this environment. Expected a container to be specified in: ' . json_encode($details, JSON_PRETTY_PRINT));
     }
+
+    $extra_args_array = [];
+    foreach ($extra_args as $arg) {
+      $extra_args_array += explode(' ', $arg);
+    }
     
     $command = $details->get(['script', 'command']);
     $base = $details->get('base');
@@ -38,17 +43,25 @@ class DockerComposeProvider extends DockerProvider {
       if ($base) {
         $command = 'cd ' . escapeshellarg($base) . ' && ' . $command;
       }
+      if ($extra_args_array) {
+        array_shift($extra_args_array);
+        $extra_args_str = implode(' ', $extra_args_array);
+        if ($extra_args_str) {
+          $command .= ' ' . $extra_args_str;
+        }
+        $extra_args_array = [];
+        $extra_args_str = '';
+      }
       $command = ' /bin/bash -c "' . $command . '"';
-
-      array_shift($extra_args);
     }
 
-    $extra_args = implode(' ', $extra_args);
-    if ($extra_args) {
-      $extra_args = ' ' . $extra_args;
+    if (is_array($extra_args_array)) {
+      $extra_args_str = implode(' ', $extra_args_array);
+      if ($extra_args_str) {
+        $extra_args_str = ' ' . $extra_args_str;
+      }
     }
-
-    return $this_command . ' exec ' . escapeshellarg($container) . $command . $extra_args;
+    return $this_command . ' exec ' . escapeshellarg($container) . $command . $extra_args_str;
   }
 
   /**
