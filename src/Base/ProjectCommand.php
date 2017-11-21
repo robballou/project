@@ -3,6 +3,7 @@
 namespace Project\Base;
 
 use Project\Executor\Executor;
+use Project\Executor\OutputExecutor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,7 +20,14 @@ abstract class ProjectCommand extends Command {
       $output = $this->output;
     }
 
-    $ex = new Executor($command, $output, $this->getApplication()->config);
+    $class = 'Project\Executor\Executor';
+    if ($this->input) {
+      if ($this->input->getOption('no-execute', false)) {
+        $class = 'Project\Executor\OutputExecutor';
+      }
+    }
+
+    $ex = new $class($command, $output, $this->getApplication()->config);
     if ($output && $output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
       $ex->outputCommand($output);
     }

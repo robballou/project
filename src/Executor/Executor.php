@@ -33,7 +33,7 @@ class Executor {
     }
   }
 
-  public function execute($command = NULL) {
+  protected function buildCommand($command = NULL) {
     if (!$command && $this->command) {
       $command = $this->command;
     }
@@ -54,7 +54,11 @@ class Executor {
 
     $real_command = $shell . ' -lc "';
     $real_command .= $this->escape($command) . '"';
+    return $real_command;
+  }
 
+  public function execute($command = NULL) {
+    $real_command = $this->buildCommand($command);
     $process = proc_open($real_command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
     $this->processStatus = proc_get_status($process);
     $this->exitCode = proc_close($process);

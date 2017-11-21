@@ -10,12 +10,21 @@ use Project\Configuration;
 $application = new Application();
 $application->config = new Configuration();
 
-$application->getDefinition()->addOption(
+$definition = $application->getDefinition();
+$definition->addOption(
   new InputOption(
     'environment',
     'e',
     InputOption::VALUE_OPTIONAL,
     'The environment to operate in.'
+  )
+);
+$definition->addOption(
+  new InputOption(
+    'no-execute',
+    'x',
+    InputOption::VALUE_OPTIONAL,
+    'Output the command but do not run it'
   )
 );
 
