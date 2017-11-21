@@ -54,6 +54,11 @@ Future terms:
 * Database
 * Deploy
 
+If you ever want to see what a command will run without actually committing to it, you can run with the `no-execute` flag:
+
+    project --no-execute deploy production
+    project -x test thing
+
 ### build
 
 * [Example config](https://github.com/robballou/src/master/examples/build.yml)
