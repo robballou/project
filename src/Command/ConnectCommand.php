@@ -21,6 +21,8 @@ class ConnectCommand extends ProjectCommand {
       ->setName('connect')
       // the short description shown while running "php bin/console list"
       ->setDescription('Connect via ssh/bash to an environment')
+
+      ->addArgument('name', InputArgument::OPTIONAL, 'Name of environment to connect to')
     ;
   }
 
@@ -30,6 +32,10 @@ class ConnectCommand extends ProjectCommand {
   protected function execute(InputInterface $input, OutputInterface $output) {
     $config = $this->getApplication()->config;
     $environment = $config->getEnvironment($input);
+    $name = $input->getArgument('name');
+    if ($name) {
+      $environment = $name;
+    }
 
     $command_config = $config->getCommandConfig('connect', $input);
     if ($command_config === NULL) {

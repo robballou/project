@@ -53,6 +53,7 @@ Future terms:
 
 * Database
 * Deploy
+* Logs
 
 If you ever want to see what a command will run without actually committing to it, you can run with the `no-execute` flag:
 
