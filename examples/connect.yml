@@ -1,5 +1,15 @@
 connect:
 
+  #
+  # connect items are treated as environments, but you can also use them as
+  # a named argument:
+  #
+  #   project -estage connect
+  #   project connect stage
+  #
+  # This may change in the future as part of a cleanup of the idea around
+  # environments, etc.
+
   # an SSH style connection: this will effectively be:
   #   ssh example -t "cd /var/www/vhosts/example.com; bash --login"
   stage:
